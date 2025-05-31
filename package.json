@@ -1,0 +1,14 @@
+{
+  "name": "scan2eat",
+  "private": true,
+  "version": "0.0.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "firebase",
+    "functions"
+  ],
+  "dependencies": {
+    "turbo": "^2.5.4"
+  }
+}
