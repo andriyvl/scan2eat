@@ -10,6 +10,23 @@ initializeApp({
 
 const db = getFirestore();
 
+const translations = [
+  { key: 'welcome', lang: 'en', value: 'Welcome to Scan2Eat' },
+  { key: 'welcome', lang: 'vi', value: 'Chào mừng đến với Scan2Eat' },
+  { key: 'order', lang: 'en', value: 'Place Order' },
+  { key: 'order', lang: 'vi', value: 'Đặt món' },
+];
+
+async function seedTranslations() {
+  const batch = db.batch();
+  translations.forEach((t) => {
+    const docRef = db.collection('translations').doc(`${t.key}_${t.lang}`);
+    batch.set(docRef, t);
+  });
+  await batch.commit();
+  console.log('✅ Seeded translations');
+}
+
 async function seed() {
   const restaurantId = 'rest_scan2eat_demo';
 
@@ -76,6 +93,8 @@ async function seed() {
     type: 'waiter_call',
     status: 'active'
   });
+
+  await seedTranslations();
 
   console.log('🔥 Firestore seeded successfully');
 }
