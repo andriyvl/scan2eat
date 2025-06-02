@@ -1,26 +1,35 @@
 require('dotenv').config();
-const { initializeApp, applicationDefault } = require('firebase-admin/app');
+const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./service-account.json');
 
 initializeApp({
-  credential: applicationDefault(),
-  projectId: serviceAccount.project_id
+  credential: cert(serviceAccount)
 });
 
 const db = getFirestore();
 
+const shouldClear = process.argv.includes('--clean');
+
+async function clearCollection(collectionName) {
+  const snap = await db.collection(collectionName).get();
+  const batch = db.batch();
+  snap.forEach((doc) => batch.delete(doc.ref));
+  await batch.commit();
+  console.log(`🧹 Cleared ${collectionName}`);
+}
+
 const translations = [
-  { key: 'welcome', lang: 'en', value: 'Welcome to Scan2Eat' },
-  { key: 'welcome', lang: 'vi', value: 'Chào mừng đến với Scan2Eat' },
-  { key: 'order', lang: 'en', value: 'Place Order' },
-  { key: 'order', lang: 'vi', value: 'Đặt món' },
+  { key: 'welcome', language: 'en', value: 'Welcome to Scan2Eat' },
+  { key: 'welcome', language: 'vi', value: 'Chào mừng đến với Scan2Eat' },
+  { key: 'order', language: 'en', value: 'Place Order' },
+  { key: 'order', language: 'vi', value: 'Đặt món' },
 ];
 
 async function seedTranslations() {
   const batch = db.batch();
   translations.forEach((t) => {
-    const docRef = db.collection('translations').doc(`${t.key}_${t.lang}`);
+    const docRef = db.collection('translations').doc(`${t.key}_${t.language}`);
     batch.set(docRef, t);
   });
   await batch.commit();
@@ -28,34 +37,47 @@ async function seedTranslations() {
 }
 
 async function seed() {
-  const restaurantId = 'rest_scan2eat_demo';
+  if (shouldClear) {
+    await clearCollection('translations');
+    await clearCollection('categories');
+    await clearCollection('dishes');
+    await clearCollection('orders');
+    await clearCollection('calls');
+    await clearCollection('tables');
+  }
 
+  const restaurantId = 'restScan2EatDemo';
+
+  // 🔸 Restaurants (custom ID)
   await db.collection('restaurants').doc(restaurantId).set({
     name: 'Scan2Eat Demo Restaurant',
-    default_lang: 'en',
-    owner_email: 'admin@scan2eat.app',
-    created_at: FieldValue.serverTimestamp()
+    defaultLang: 'en',
+    ownerEmail: 'admin@scan2eat.app',
+    createdAt: FieldValue.serverTimestamp()
   });
 
-  await db.collection('tables').doc('A5').set({
-    table_number: 'A5',
-    restaurant_id: restaurantId,
-    qr_id: 'A5'
+  // 🔸 Tables (auto ID)
+  const tableRef = await db.collection('tables').add({
+    tableNumber: 'A5',
+    restaurantId,
+    qrId: 'A5'
   });
 
-  await db.collection('menu').doc('noodles').set({
-    category_name: 'Noodles',
-    restaurant_id: restaurantId,
-    sort_order: 1
+  // 🔸 Categories (was 'menu')
+  const categoryRef = await db.collection('categories').add({
+    categoryName: 'Noodles',
+    restaurantId,
+    sortOrder: 1
   });
 
-  await db.collection('dishes').doc('pho_bo').set({
+  // 🔸 Dishes (auto ID)
+  const dishRef = await db.collection('dishes').add({
     name: 'Phở Bò',
-    category_id: 'noodles',
-    restaurant_id: restaurantId,
+    categoryId: categoryRef.id,
+    restaurantId,
     description: 'Vietnamese beef noodle soup',
-    price: 55000,
-    image_url: 'https://example.com/pho.jpg',
+    basePrice: 55000,
+    imageUrl: 'https://example.com/pho.jpg',
     addons: [
       { name: 'Extra Egg', price: 10000 },
       { name: 'No Cilantro', price: 0 }
@@ -66,19 +88,21 @@ async function seed() {
     }
   });
 
+  // 🔸 Orders
   await db.collection('orders').add({
-    table_id: 'A5',
-    lang: 'en',
-    is_takeaway: false,
-    order_comment: 'Allergic to peanuts',
+    tableId: tableRef.id,
+    language: 'en',
+    isTakeaway: false,
+    orderComment: 'Allergic to peanuts',
     status: 'pending',
-    total_price: 65000,
-    created_at: FieldValue.serverTimestamp(),
+    totalPrice: 65000,
+    createdAt: FieldValue.serverTimestamp(),
     dishes: [
       {
-        dish_id: 'pho_bo',
+        dishId: dishRef.id,
         name: 'Phở Bò',
-        base_price: 55000,
+        basePrice: 55000,
+        price: 65000,
         addons: [{ name: 'Extra Egg', price: 10000 }],
         comment: '',
         takeaway: false,
@@ -87,8 +111,9 @@ async function seed() {
     ]
   });
 
+  // 🔸 Calls
   await db.collection('calls').add({
-    table_id: 'A5',
+    tableId: tableRef.id,
     timestamp: FieldValue.serverTimestamp(),
     type: 'waiter_call',
     status: 'active'
@@ -96,7 +121,8 @@ async function seed() {
 
   await seedTranslations();
 
-  console.log('🔥 Firestore seeded successfully');
+  console.log('🔥 Firestore seeded successfully (with auto IDs + categories)');
 }
+
 
 seed();

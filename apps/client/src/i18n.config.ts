@@ -11,8 +11,8 @@ i18n.use(initReactI18next).init({
   resources: {} // will load manually below
 });
 
-export const loadTranslations = async (lang: string) => {
-  const q = query(collection(db, 'translations'), where('lang', '==', lang));
+export const loadTranslations = async (language: string) => {
+  const q = query(collection(db, 'translations'), where('language', '==', language));
   const snapshot = await getDocs(q);
 
   const translations: Record<string, string> = {};
@@ -22,26 +22,9 @@ export const loadTranslations = async (lang: string) => {
   });
 
   // Clear previous bundle
-  i18n.removeResourceBundle(lang, 'translation');
+  i18n.removeResourceBundle(language, 'translation');
 
   // Add and switch language
-  i18n.addResourceBundle(lang, 'translation', translations, true, true);
-  i18n.changeLanguage(lang);
+  i18n.addResourceBundle(language, 'translation', translations, true, true);
+  i18n.changeLanguage(language);
 };
-
-
-// FOR DEBUG
-// export const loadTranslations = async (lang: string) => {
-//   console.log('[debug] trying to fetch translations for:', lang);
-
-//   try {
-//     const snapshot = await getDocs(collection(db, 'translations'));
-//     console.log('[debug] snapshot size:', snapshot.size);
-
-//     snapshot.forEach((doc) => {
-//       console.log('[debug] doc:', doc.id, doc.data());
-//     });
-//   } catch (e) {
-//     console.error('[debug] error fetching translations:', e);
-//   }
-// };

@@ -1,4 +1,4 @@
-import { loadTranslations } from './../i18n.config';
+import { loadTranslations } from '../i18n.config';
 
 export const LanguageSwitcher = () => {
   return (
