@@ -2,6 +2,8 @@ require('dotenv').config();
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./service-account.json');
+const enTranslations = require('../apps/client/src/locales/en.json');
+const viTranslations = require('../apps/client/src/locales/vi.json');
 
 initializeApp({
   credential: cert(serviceAccount)
@@ -19,19 +21,17 @@ async function clearCollection(collectionName) {
   console.log(`🧹 Cleared ${collectionName}`);
 }
 
-const translations = [
-  { key: 'welcome', language: 'en', value: 'Welcome to Scan2Eat' },
-  { key: 'welcome', language: 'vi', value: 'Chào mừng đến với Scan2Eat' },
-  { key: 'order', language: 'en', value: 'Place Order' },
-  { key: 'order', language: 'vi', value: 'Đặt món' },
-];
-
 async function seedTranslations() {
   const batch = db.batch();
-  translations.forEach((t) => {
-    const docRef = db.collection('translations').doc(`${t.key}_${t.language}`);
-    batch.set(docRef, t);
-  });
+  
+  // Seed English translations
+  const enDocRef = db.collection('translations').doc('en');
+  batch.set(enDocRef, enTranslations);
+  
+  // Seed Vietnamese translations
+  const viDocRef = db.collection('translations').doc('vi');
+  batch.set(viDocRef, viTranslations);
+  
   await batch.commit();
   console.log('✅ Seeded translations');
 }

@@ -20,16 +20,6 @@ export type Addon = {
     };
   };
   
-  export type OrderDish = {
-    dishId: string;
-    name: string;
-    basePrice: number;
-    addons: Addon[];
-    comment?: string;
-    takeaway: boolean;
-    status: 'pending' | 'in_progress' | 'ready' | 'delivered';
-  };
-  
   export type MenuCategory = {
     id: string;
     categoryName: string;

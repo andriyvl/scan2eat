@@ -1,11 +1,13 @@
-import { useOrderStore } from '../order.store';
-import { useState } from 'react';
-import { submitOrder } from '../menu-api.service';
+  import { useOrderStore } from './order.store';
+  import { useState } from 'react';
+  import { submitOrder } from '../services/menu-api.service';
 import { useLanguage } from '@/contexts/language.context';
+import { useTable } from '@/contexts/table.context';
 
 export const OrderSummary = () => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
+  const { tableId } = useTable();
 
   const total = dishes.reduce(
     (sum, d) => sum + d.basePrice + d.addons.reduce((aSum, a) => aSum + a.price, 0),
@@ -16,7 +18,7 @@ export const OrderSummary = () => {
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      await submitOrder('A5', language, dishes, total); // TODO: dynamic
+      await submitOrder(tableId, language, dishes, total); // TODO: dynamic
       clearOrder();
       alert('Order placed!');
     } catch (err) {
@@ -40,12 +42,16 @@ export const OrderSummary = () => {
               {d.takeaway ? ' 🥡' : ''}
               {d.comment ? ` – ${d.comment}` : ''}
             </span>
+            <div>
+            <span>{d.price}₫</span>
             <span
               className="text-red-500 cursor-pointer ml-4"
               onClick={() => removeDish(d.dishId)}
             >
               ✕
             </span>
+            </div>
+          
           </li>
         ))}
       </ul>

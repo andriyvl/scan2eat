@@ -1,7 +1,8 @@
 import { useState } from 'react';
-import type { Dish } from '../menu.types';
-import { useOrderStore } from '../order.store';
+import type { Dish } from '../types/menu.types';
+import { useOrderStore } from '../order/order.store';
 import { useLanguage } from '@/contexts/language.context';
+import type { Addon } from '../types/menu.types';
 
 
 export const DishCard = ({ dish }: { dish: Dish }) => {
@@ -18,18 +19,21 @@ const dishDescription = dish.translations?.[language]?.description ?? dish.descr
 
 
   const toggleAddon = (addonName: string) => {
-    setSelectedAddons((prev) =>
+    setSelectedAddons((prev: Addon[]) =>
       prev.some((a) => a.name === addonName)
         ? prev.filter((a) => a.name !== addonName)
-        : [...prev, dish.addons.find((a) => a.name === addonName)!]
+        : [...prev, dish.addons.find((a: Addon) => a.name === addonName)!]
     );
   };
+
+  const price = dish.basePrice + selectedAddons.reduce((sum, a) => sum + a.price, 0);
 
   const handleAdd = () => {
     setDish({
       dishId: dish.id,
       name: dish.name,
       basePrice: dish.basePrice,
+      price,
       addons: selectedAddons,
       comment,
       takeaway,

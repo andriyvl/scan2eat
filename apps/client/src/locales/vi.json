@@ -1,5 +1,9 @@
 {
     "welcome": "Chào mừng đến với Scan2Eat",
-    "order": "Đặt món"
+    "order": "Đặt món",
+    "call_waiter": "Gọi nhân viên",
+    "calling_waiter": "Đang gọi...",
+    "waiter_called": "Đã gọi nhân viên",
+    "waiter_call_error": "Không thể gọi nhân viên. Vui lòng thử lại."
 }
   

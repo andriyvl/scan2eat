@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { OrderDish } from './menu.types';
+import type { OrderDish } from './types/order.types';
 
 type OrderStore = {
   dishes: OrderDish[];

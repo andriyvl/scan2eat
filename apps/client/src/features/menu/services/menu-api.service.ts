@@ -1,4 +1,4 @@
-import { db } from '@/firebase.config';
+import { db } from '@/config/firebase.config';
 import {
   collection,
   query,
@@ -6,7 +6,8 @@ import {
   getDocs,
   addDoc
 } from 'firebase/firestore';
-import type { Dish, MenuCategory, OrderDish } from './menu.types';
+import type { Dish, MenuCategory } from '../types/menu.types';
+import type { OrderDish } from '@/features/menu/order/types/order.types';
 
 export const getMenuCategories = async (restaurantId: string) => {
   const snap = await getDocs(

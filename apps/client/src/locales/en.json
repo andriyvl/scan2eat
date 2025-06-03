@@ -1,5 +1,9 @@
 {
     "welcome": "Welcome to Scan2Eat",
-    "order": "Place Order"
+    "order": "Place Order",
+    "call_waiter": "Call Waiter",
+    "calling_waiter": "Calling...",
+    "waiter_called": "Waiter has been called",
+    "waiter_call_error": "Failed to call waiter. Please try again."
 }
   
