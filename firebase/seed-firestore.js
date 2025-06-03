@@ -97,6 +97,7 @@ async function seed() {
     status: 'pending',
     totalPrice: 65000,
     createdAt: FieldValue.serverTimestamp(),
+    updatedAt: FieldValue.serverTimestamp(),
     dishes: [
       {
         dishId: dishRef.id,
