@@ -1,29 +1,63 @@
-  import { useOrderStore } from './order.store';
-  import { useState } from 'react';
-  import { submitOrder } from '../services/menu-api.service';
+import { useOrderStore } from './order.store';
+import { useState, useEffect } from 'react';
+import { submitOrder } from '../services/menu-api.service';
 import { useLanguage } from '@/contexts/language.context';
 import { useTable } from '@/contexts/table.context';
+import { useNavigate } from 'react-router-dom';
+import { doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
+import { db } from '@/config/firebase.config';
+import { calculateOrderTotal } from '@/features/order/services/order.service';
 
 export const OrderSummary = () => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
-  const { tableId } = useTable();
+  const { tableId, restaurantId } = useTable();
+  const navigate = useNavigate();
+  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
 
-  const total = dishes.reduce(
-    (sum, d) => sum + d.basePrice + d.addons.reduce((aSum, a) => aSum + a.price, 0),
-    0
-  );
+  useEffect(() => {
+    const storedOrderId = localStorage.getItem('currentOrderId');
+    setCurrentOrderId(storedOrderId);
+  }, []);
+
+  const total = calculateOrderTotal(dishes);
   const { language } = useLanguage();
 
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
-      await submitOrder(tableId, language, dishes, total); // TODO: dynamic
-      clearOrder();
-      alert('Order placed!');
+      if (currentOrderId) {
+        // Get current order to calculate new total
+        const orderRef = doc(db, 'orders', currentOrderId);
+        const orderSnap = await getDoc(orderRef);
+        const currentOrder = orderSnap.data();
+        
+        if (!currentOrder) {
+          throw new Error('Order not found');
+        }
+
+        // Combine existing and new dishes
+        const allDishes = [...currentOrder.dishes, ...dishes];
+        const newTotal = calculateOrderTotal(allDishes);
+
+        // Add dishes to existing order and update total
+        await updateDoc(orderRef, {
+          dishes: arrayUnion(...dishes),
+          price: newTotal,
+          updatedAt: new Date()
+        });
+        clearOrder();
+        navigate(`/order/${currentOrderId}`);
+      } else {
+        // Create new order
+        const orderId = await submitOrder(tableId, language, dishes, total);
+        localStorage.setItem('currentOrderId', orderId);
+        clearOrder();
+        navigate(`/order/${orderId}`);
+      }
     } catch (err) {
       console.error(err);
-      alert('Failed to submit order');
+      alert('Failed to update order');
     } finally {
       setSubmitting(false);
     }
@@ -43,15 +77,14 @@ export const OrderSummary = () => {
               {d.comment ? ` – ${d.comment}` : ''}
             </span>
             <div>
-            <span>{d.price}₫</span>
-            <span
-              className="text-red-500 cursor-pointer ml-4"
-              onClick={() => removeDish(d.dishId)}
-            >
-              ✕
-            </span>
+              <span>{d.price}₫</span>
+              <span
+                className="text-red-500 cursor-pointer ml-4"
+                onClick={() => removeDish(d.dishId)}
+              >
+                ✕
+              </span>
             </div>
-          
           </li>
         ))}
       </ul>
@@ -64,7 +97,11 @@ export const OrderSummary = () => {
         className="mt-2 w-full bg-blue-600 text-white py-2 rounded"
         disabled={submitting}
       >
-        {submitting ? 'Submitting...' : 'Submit Order'}
+        {submitting 
+          ? 'Updating...' 
+          : currentOrderId 
+            ? 'Add to Current Order' 
+            : 'Submit Order'}
       </button>
     </div>
   );

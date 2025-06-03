@@ -28,7 +28,7 @@ export const submitOrder = async (
   language: string,
   dishes: OrderDish[],
   total: number
-) => {
+): Promise<string> => {
   const order = {
     tableId,
     language,
@@ -37,8 +37,10 @@ export const submitOrder = async (
     dishes,
     status: 'pending',
     price: total,
-    createdAt: new Date()
+    createdAt: new Date(),
+    updatedAt: new Date()
   };
 
-  await addDoc(collection(db, 'orders'), order);
+  const docRef = await addDoc(collection(db, 'orders'), order);
+  return docRef.id;
 };
