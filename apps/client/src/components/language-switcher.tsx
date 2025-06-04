@@ -15,13 +15,13 @@ export const LanguageSwitcher = () => {
         onClick={() => handleLanguageChange('en')}
         className={`px-2 py-1 rounded ${language === 'en' ? 'bg-gray-200' : ''}`}
       >
-        🇬🇧 English
+        🇬🇧
       </button>
       <button 
         onClick={() => handleLanguageChange('vi')}
         className={`px-2 py-1 rounded ${language === 'vi' ? 'bg-gray-200' : ''}`}
       >
-        🇻🇳 Tiếng Việt
+        🇻🇳
       </button>
     </div>
   );

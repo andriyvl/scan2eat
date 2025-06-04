@@ -51,7 +51,7 @@ export const PaymentCall = () => {
       <button
         onClick={handleRequestBill}
         disabled={isWaiting}
-        className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        className="w-full bg-green-600 text-white py-3 px-4 rounded-lg font-semibold text-base shadow-sm hover:bg-green-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
       >
         {isWaiting ? t('waiting_for_bill') : t('request_bill')}
       </button>

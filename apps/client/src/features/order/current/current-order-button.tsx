@@ -18,7 +18,6 @@ export const CurrentOrderButton = () => {
       className="flex items-center gap-2 px-3 py-1.5 bg-blue-100 text-blue-800 rounded-md hover:bg-blue-200 transition-colors"
     >
       <span>🛒</span>
-      <span>Current Order</span>
     </button>
   );
 }; 

@@ -3,7 +3,11 @@ import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
 import { hasActiveCall as checkActiveCall, CallsService } from './services/calls.service';
 
-export const WaiterCall = () => {
+interface WaiterCallProps {
+  className?: boolean;
+}
+
+export const WaiterCall = ({ className }: WaiterCallProps) => {
   const { t } = useTranslation();
   const { tableId } = useTable();
   const [isCalling, setIsCalling] = useState(false);
@@ -37,7 +41,7 @@ export const WaiterCall = () => {
     <button
       onClick={handleCallWaiter}
       disabled={isCalling || hasActiveCall}
-      className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+      className={`w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold text-base shadow-sm hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
     >
       {isCalling ? t('calling_waiter') : hasActiveCall ? t('waiter_called') : t('call_waiter')}
     </button>
