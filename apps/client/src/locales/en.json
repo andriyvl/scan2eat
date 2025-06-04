@@ -4,6 +4,19 @@
     "call_waiter": "Call Waiter",
     "calling_waiter": "Calling...",
     "waiter_called": "Waiter has been called",
-    "waiter_call_error": "Failed to call waiter. Please try again."
+    "waiter_call_error": "Failed to call waiter. Please try again.",
+    "request_bill": "Request Bill",
+    "requesting_bill": "Requesting Bill...",
+    "waiting_for_bill": "Waiting for Bill",
+    "bill_requested": "Bill requested",
+    "bill_request_error": "Failed to request bill. Please try again.",
+    "add_more_items": "Add more items",
+    "select_payment_method": "Select Payment Method",
+    "cancel": "Cancel",
+    "payment_methods": {
+        "qr": "QR Code",
+        "card": "Credit Card",
+        "cash": "Cash"
+    }
 }
   

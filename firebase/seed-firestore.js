@@ -12,6 +12,7 @@ initializeApp({
 const db = getFirestore();
 
 const shouldClear = process.argv.includes('--clean');
+const seedOnlyTranslations = process.argv.includes('--translations-only');
 
 async function clearCollection(collectionName) {
   const snap = await db.collection(collectionName).get();
@@ -38,12 +39,22 @@ async function seedTranslations() {
 
 async function seed() {
   if (shouldClear) {
-    await clearCollection('translations');
-    await clearCollection('categories');
-    await clearCollection('dishes');
-    await clearCollection('orders');
-    await clearCollection('calls');
-    await clearCollection('tables');
+    if (seedOnlyTranslations) {
+      await clearCollection('translations');
+    } else {
+      await clearCollection('translations');
+      await clearCollection('categories');
+      await clearCollection('dishes');
+      await clearCollection('orders');
+      await clearCollection('calls');
+      await clearCollection('tables');
+    }
+  }
+
+  if (seedOnlyTranslations) {
+    await seedTranslations();
+    console.log('🔥 Translations seeded successfully');
+    return;
   }
 
   const restaurantId = 'restScan2EatDemo';

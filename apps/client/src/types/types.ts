@@ -53,7 +53,7 @@ export interface Order {
   language: string;
   isTakeaway: boolean;
   orderComment: string;
-  status: 'pending' | 'preparing' | 'ready' | 'completed';
+  status: 'pending' | 'preparing' | 'ready' | 'completed' | 'requires_attention' | 'awaiting_payment' | 'paid';
   dishes: OrderDish[];
   price: number;
   createdAt: Timestamp;

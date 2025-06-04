@@ -4,17 +4,22 @@ import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/config/firebase.config';
 import { useTable } from '@/contexts/table.context';
 import type { Order } from '@/types/types';
+import { PaymentCall } from '@/features/call/payment-call';
+import { useTranslation } from 'react-i18next';
+import { hasActiveCall } from '@/features/call/services/calls.service';
 
 interface CurrentOrderProps {
   orderId: string;
 }
 
 export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { tableId, restaurantId, setContext } = useTable();
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [hasActivePaymentCall, setHasActivePaymentCall] = useState(false);
 
   useEffect(() => {
     if (!orderId) {
@@ -43,6 +48,14 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
         console.error('Error loading order:', error);
       }
     );
+
+    // Check for active payment calls
+    const checkPaymentCalls = async () => {
+      const hasCall = await hasActiveCall(tableId, 'payment_call');
+      setHasActivePaymentCall(hasCall);
+    };
+
+    checkPaymentCalls();
 
     return () => unsubscribe();
   }, [orderId, tableId, setContext]);
@@ -73,6 +86,8 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
   if (!order) {
     return <div className="text-center py-8">Order not found</div>;
   }
+
+  const canAddMoreItems = order.status === 'pending' && !hasActivePaymentCall;
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -117,16 +132,17 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
         <p>Last updated: {order.updatedAt?.toDate().toLocaleString()}</p>
       </div>
 
-      {order.status === 'pending' && (
-        <div className="mt-6">
+      <div className="mt-6 space-y-3">
+        {canAddMoreItems && (
           <button
             onClick={() => navigate(`/${restaurantId}/${tableId}`)}
             className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 transition-colors"
           >
-            Add More Items
+            {t('add_more_items')}
           </button>
-        </div>
-      )}
+        )}
+        <PaymentCall />
+      </div>
     </div>
   );
 }; 

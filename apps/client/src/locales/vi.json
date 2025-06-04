@@ -4,6 +4,19 @@
     "call_waiter": "Gọi nhân viên",
     "calling_waiter": "Đang gọi...",
     "waiter_called": "Đã gọi nhân viên",
-    "waiter_call_error": "Không thể gọi nhân viên. Vui lòng thử lại."
+    "waiter_call_error": "Không thể gọi nhân viên. Vui lòng thử lại.",
+    "request_bill": "Yêu Cầu Thanh Toán",
+    "requesting_bill": "Đang Yêu Cầu...",
+    "waiting_for_bill": "Đang Chờ Hóa Đơn",
+    "bill_requested": "Đã yêu cầu hóa đơn",
+    "bill_request_error": "Không thể yêu cầu hóa đơn. Vui lòng thử lại.",
+    "add_more_items": "Thêm món",
+    "select_payment_method": "Chọn Phương Thức Thanh Toán",
+    "cancel": "Hủy",
+    "payment_methods": {
+        "qr": "Mã QR",
+        "card": "Thẻ Tín Dụng",
+        "cash": "Tiền Mặt"
+    }
 }
   

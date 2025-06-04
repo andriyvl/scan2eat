@@ -1,6 +1,6 @@
 import { MenuList } from './list/menu-list';
-import { OrderSummary } from '../order/creation/order-summary';
-import { WaiterCall } from '../waiter-call';
+import { OrderPreview } from '../order/creation/order-preview';
+import { WaiterCall } from '../call';
 
 export const MenuPage = () => {
   const restaurantId = 'restScan2EatDemo'; // 🔁 Replace with dynamic later
@@ -8,7 +8,7 @@ export const MenuPage = () => {
   return (
     <div className="p-4 pb-32">
       <MenuList restaurantId={restaurantId} />
-      <OrderSummary />
+      <OrderPreview />
       <WaiterCall />
     </div>
   );

@@ -5,7 +5,7 @@ import { useTable } from '@/contexts/table.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 
-export const OrderSummary = () => {
+export const OrderPreview = () => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
   const { tableId } = useTable();
