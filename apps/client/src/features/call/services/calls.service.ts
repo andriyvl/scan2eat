@@ -44,12 +44,12 @@ export class CallsService {
     return CallsService.instance;
   }
 
-  async createCall(tableId: string, type: CallType, data?: CallData): Promise<void> {
+  async createCall(tableId: string, type: CallType, data?: CallData): Promise<string> {
     if (!tableId) {
       throw new Error('Table ID is required');
     }
 
-    await addDoc(this.callsCollection, {
+    const docRef = await addDoc(this.callsCollection, {
       tableId,
       type,
       status: 'active',
@@ -57,9 +57,10 @@ export class CallsService {
       updatedAt: new Date(),
       ...data
     });
+    return docRef.id;
   }
 
-  async getActiveCall(tableId: string, type: Call['type']): Promise<Call | null> {
+  async getActiveCall(tableId: string, type: CallType) {
     const callsQuery = query(
       this.callsCollection,
       where('tableId', '==', tableId),
@@ -73,12 +74,13 @@ export class CallsService {
     }
 
     const doc = snapshot.docs[0];
+    const data = doc.data();
     return {
       id: doc.id,
-      ...doc.data(),
-      createdAt: doc.data().createdAt.toDate(),
-      updatedAt: doc.data().updatedAt.toDate(),
-    } as Call;
+      ...data,
+      createdAt: data.createdAt?.toDate?.() || new Date(),
+      updatedAt: data.updatedAt?.toDate?.() || new Date(),
+    };
   }
 
   async completeCall(callId: string): Promise<void> {

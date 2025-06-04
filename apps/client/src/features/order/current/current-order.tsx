@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, collection, query, where } from 'firebase/firestore';
 import { db } from '@/config/firebase.config';
 import { useTable } from '@/contexts/table.context';
 import type { Order } from '@/types/types';
 import { PaymentCall } from '@/features/call/payment-call';
+import { WaiterCall } from '@/features/call/waiter-call';
 import { useTranslation } from 'react-i18next';
-import { hasActiveCall } from '@/features/call/services/calls.service';
 
 interface CurrentOrderProps {
   orderId: string;
@@ -28,7 +28,7 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
       return;
     }
 
-    const unsubscribe = onSnapshot(
+    const unsubscribeOrder = onSnapshot(
       doc(db, 'orders', orderId),
       (docSnap) => {
         if (docSnap.exists()) {
@@ -37,6 +37,7 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
             setContext('restScan2EatDemo', orderData.tableId);
           }
           setOrder({ id: docSnap.id, ...orderData });
+          console.log('Order status:', orderData.status); // Debug log
         } else {
           setError('Order not found');
         }
@@ -49,15 +50,25 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
       }
     );
 
-    // Check for active payment calls
-    const checkPaymentCalls = async () => {
-      const hasCall = await hasActiveCall(tableId, 'payment_call');
-      setHasActivePaymentCall(hasCall);
+    // Listen for payment calls
+    const unsubscribePaymentCalls = tableId ? onSnapshot(
+      query(
+        collection(db, 'calls'),
+        where('tableId', '==', tableId),
+        where('type', '==', 'payment_call'),
+        where('status', '==', 'active')
+      ),
+      (snapshot) => {
+        const hasCall = !snapshot.empty;
+        console.log('Has active payment call:', hasCall); // Debug log
+        setHasActivePaymentCall(hasCall);
+      }
+    ) : () => {};
+
+    return () => {
+      unsubscribeOrder();
+      unsubscribePaymentCalls();
     };
-
-    checkPaymentCalls();
-
-    return () => unsubscribe();
   }, [orderId, tableId, setContext]);
 
   const getStatusColor = (status: Order['status']) => {
@@ -88,6 +99,7 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
   }
 
   const canAddMoreItems = order.status === 'pending' && !hasActivePaymentCall;
+  console.log('Can add more items:', canAddMoreItems, 'Order status:', order.status, 'Has active payment call:', hasActivePaymentCall); // Debug log
 
   return (
     <div className="bg-white rounded-lg shadow-md p-6">
@@ -141,7 +153,10 @@ export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
             {t('add_more_items')}
           </button>
         )}
-        <PaymentCall />
+        <div className="grid grid-cols-2 gap-3">
+          <WaiterCall />
+          <PaymentCall />
+        </div>
       </div>
     </div>
   );
