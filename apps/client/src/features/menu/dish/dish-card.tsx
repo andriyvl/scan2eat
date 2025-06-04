@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import type { Dish } from '../types/menu.types';
-import { useOrderStore } from '../order/order.store';
+import type { Dish } from '@/types/types';
+import { useOrderStore } from '@/features/order/order.store';
 import { useLanguage } from '@/contexts/language.context';
-import type { Addon } from '../types/menu.types';
+import type { Addon } from '@/types/types';
 
 
 export const DishCard = ({ dish }: { dish: Dish }) => {

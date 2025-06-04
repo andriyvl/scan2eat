@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { db } from '@/config/firebase.config';
 import { useTable } from '@/contexts/table.context';
-import type { Order } from './order.types';
+import type { Order } from '@/types/types';
 
-interface OrderStatusProps {
+interface CurrentOrderProps {
   orderId: string;
 }
 
-export const OrderStatus = ({ orderId }: OrderStatusProps) => {
+export const CurrentOrder = ({ orderId }: CurrentOrderProps) => {
   const navigate = useNavigate();
   const { tableId, restaurantId, setContext } = useTable();
   const [order, setOrder] = useState<Order | null>(null);

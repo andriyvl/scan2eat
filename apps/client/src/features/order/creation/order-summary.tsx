@@ -1,17 +1,14 @@
-import { useOrderStore } from './order.store';
+import { useOrderStore } from '../order.store';
 import { useState, useEffect } from 'react';
-import { submitOrder } from '../services/menu-api.service';
 import { useLanguage } from '@/contexts/language.context';
 import { useTable } from '@/contexts/table.context';
 import { useNavigate } from 'react-router-dom';
-import { doc, updateDoc, arrayUnion, getDoc } from 'firebase/firestore';
-import { db } from '@/config/firebase.config';
-import { calculateOrderTotal } from '@/features/order/services/order.service';
+import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 
 export const OrderSummary = () => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
-  const { tableId, restaurantId } = useTable();
+  const { tableId } = useTable();
   const navigate = useNavigate();
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
 
@@ -27,30 +24,11 @@ export const OrderSummary = () => {
     setSubmitting(true);
     try {
       if (currentOrderId) {
-        // Get current order to calculate new total
-        const orderRef = doc(db, 'orders', currentOrderId);
-        const orderSnap = await getDoc(orderRef);
-        const currentOrder = orderSnap.data();
-        
-        if (!currentOrder) {
-          throw new Error('Order not found');
-        }
-
-        // Combine existing and new dishes
-        const allDishes = [...currentOrder.dishes, ...dishes];
-        const newTotal = calculateOrderTotal(allDishes);
-
-        // Add dishes to existing order and update total
-        await updateDoc(orderRef, {
-          dishes: arrayUnion(...dishes),
-          price: newTotal,
-          updatedAt: new Date()
-        });
+        await updateExistingOrder(currentOrderId, dishes);
         clearOrder();
         navigate(`/order/${currentOrderId}`);
       } else {
-        // Create new order
-        const orderId = await submitOrder(tableId, language, dishes, total);
+        const orderId = await submitNewOrder(tableId, language, dishes, total);
         localStorage.setItem('currentOrderId', orderId);
         clearOrder();
         navigate(`/order/${orderId}`);

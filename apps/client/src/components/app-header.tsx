@@ -1,6 +1,6 @@
 import { useTranslation } from 'react-i18next';
 import { LanguageSwitcher } from './language-switcher';
-import { CurrentOrderButton } from '@/features/order/current-order-button';
+import { CurrentOrderButton } from '@/features/order/current/current-order-button';
 
 export const AppHeader = () => {
   const { t } = useTranslation();

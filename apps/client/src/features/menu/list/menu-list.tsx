@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import type { Dish, MenuCategory } from '../types/menu.types';
+import type { Dish, MenuCategory } from '@/types/types';
 import { DishCard } from '../dish/dish-card';
-import { getMenuCategories, getDishes } from '../services/menu-api.service';
+import { getMenuCategories, getDishes } from '../../../services/api.service';
 
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -9,19 +9,17 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
 
   useEffect(() => {
     const fetchMenu = async () => {
-      const [cats, ds] = await Promise.all([
+      const [categories, dishes] = await Promise.all([
         getMenuCategories(restaurantId),
         getDishes(restaurantId),
       ]);
-      console.log('Fetched categories:', cats);
-      console.log('Fetched dishes:', ds);
-      setCategories(cats);
-      setDishes(ds);
+      setCategories(categories);
+      setDishes(dishes);
     };
     fetchMenu();
   }, [restaurantId]);
 
-  // Log when dishes are rendered
+
   useEffect(() => {
     console.log('Current dishes in state:', dishes);
   }, [dishes]);
