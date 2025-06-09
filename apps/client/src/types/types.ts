@@ -44,7 +44,7 @@ export interface OrderDish {
   addons: OrderAddon[];
   comment?: string;
   takeaway: boolean;
-  status: 'pending' | 'in_progress' | 'ready' | 'delivered';
+  status: 'awaiting' | 'preparing' | 'ready' | 'dish_delivered';
 };
 
 export interface Order {
@@ -53,7 +53,7 @@ export interface Order {
   language: string;
   isTakeaway: boolean;
   orderComment: string;
-  status: 'pending' | 'preparing' | 'ready' | 'completed' | 'requires_attention' | 'awaiting_payment' | 'paid';
+  status: 'pending' | 'in_progress' | 'delivered' | 'requires_attention' | 'awaiting_payment' | 'paid';
   dishes: OrderDish[];
   price: number;
   createdAt: Timestamp;

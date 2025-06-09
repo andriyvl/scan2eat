@@ -4,7 +4,7 @@ import { useTable } from '@/contexts/table.context';
 import { hasActiveCall as checkActiveCall, CallsService } from './services/calls.service';
 
 interface WaiterCallProps {
-  className?: boolean;
+  className?: string;
 }
 
 export const WaiterCall = ({ className }: WaiterCallProps) => {
