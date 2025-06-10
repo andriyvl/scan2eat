@@ -12,6 +12,7 @@ export type Addon = {
     basePrice: number;
     addons: Addon[];
     categoryId: string;
+    tags?: string[];
     translations?: {
       [key: string]: {
         name: string;

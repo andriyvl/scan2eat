@@ -5,7 +5,8 @@ import { createContext, useContext, useState, type ReactNode } from 'react';
 type TableContextValue = {
   restaurantId: string;
   tableId: string;
-  setContext: (restaurantId: string, tableId: string) => void;
+  restaurantName?: string;
+  setContext: (restaurantId: string, tableId: string, restaurantName?: string) => void;
 };
 
 const TableContext = createContext<TableContextValue | undefined>(undefined);
@@ -13,14 +14,16 @@ const TableContext = createContext<TableContextValue | undefined>(undefined);
 export const TableProvider = ({ children }: { children: ReactNode }) => {
   const [restaurantId, setRestaurantId] = useState('');
   const [tableId, setTableId] = useState('');
+  const [restaurantName, setRestaurantName] = useState('');
 
-  const setContext = (restaurant: string, table: string) => {
+  const setContext = (restaurant: string, table: string, name?: string) => {
     setRestaurantId(restaurant);
     setTableId(table);
+    if (name) setRestaurantName(name);
   };
 
   return (
-    <TableContext.Provider value={{ restaurantId, tableId, setContext }}>
+    <TableContext.Provider value={{ restaurantId, tableId, restaurantName, setContext }}>
       {children}
     </TableContext.Provider>
   );

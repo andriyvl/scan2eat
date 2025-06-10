@@ -6,6 +6,7 @@ import { getMenuCategories, getDishes } from '../../../services/api.service';
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -19,29 +20,45 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
     fetchMenu();
   }, [restaurantId]);
 
-
-  useEffect(() => {
-    console.log('Current dishes in state:', dishes);
-  }, [dishes]);
+  const filteredDishes = selectedCategory === 'all' 
+    ? dishes 
+    : dishes.filter(dish => dish.categoryId === selectedCategory);
 
   return (
     <div className="space-y-6">
-      {categories
-        .sort((a, b) => a.sortOrder - b.sortOrder)
-        .map((cat) => {
-          const categoryDishes = dishes.filter((d) => d.categoryId === cat.id);
-          console.log(`Dishes for category ${cat.categoryName}:`, categoryDishes);
-          return (
-            <div key={cat.id}>
-              <h2 className="text-xl font-semibold">{cat.categoryName}</h2>
-              <div className="grid gap-4">
-                {categoryDishes.map((dish) => (
-                  <DishCard key={dish.id} dish={dish} />
-                ))}
-              </div>
-            </div>
-          );
-        })}
+      {/* Category Tabs */}
+      <div className="bg-white sticky top-16 z-40 border-b border-gray-200">
+        <div className="flex overflow-x-auto scrollbar-hide px-4 py-2">
+          <button
+            className={`category-tab px-4 py-2 text-sm font-medium whitespace-nowrap ${
+              selectedCategory === 'all' ? 'active' : 'text-gray-600'
+            }`}
+            onClick={() => setSelectedCategory('all')}
+          >
+            All
+          </button>
+          {categories
+            .sort((a, b) => a.sortOrder - b.sortOrder)
+            .map((cat) => (
+              <button
+                key={cat.id}
+                className={`category-tab px-4 py-2 text-sm font-medium whitespace-nowrap ${
+                  selectedCategory === cat.id ? 'active' : 'text-gray-600'
+                }`}
+                onClick={() => setSelectedCategory(cat.id)}
+              >
+                {cat.categoryName}
+              </button>
+            ))}
+        </div>
+      </div>
+
+      {/* Menu Items */}
+      <div className="p-4 space-y-4">
+        {filteredDishes.map((dish) => (
+          <DishCard key={dish.id} dish={dish} />
+        ))}
+      </div>
     </div>
   );
 };
