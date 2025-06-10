@@ -100,3 +100,4 @@ out/
 
 # Local env files
 .env*.local
+pnpm-lock.yaml
