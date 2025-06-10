@@ -4,8 +4,12 @@ import { useLanguage } from '@/contexts/language.context';
 import { useTable } from '@/contexts/table.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
+import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
+import { X } from 'lucide-react';
+import { OrderDishesButton } from './order-dishes-button';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
-export const OrderPreview = () => {
+export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
   const { tableId } = useTable();
@@ -44,43 +48,73 @@ export const OrderPreview = () => {
   if (!dishes.length) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-white shadow-md p-4 border-t z-50">
-      <h3 className="font-semibold text-lg mb-2">Your Order</h3>
-      <ul className="space-y-1 max-h-40 overflow-y-auto">
-        {dishes.map((d, i) => (
-          <li key={i} className="flex justify-between text-sm">
-            <span>
-              {d.name}
-              {d.takeaway ? ' 🥡' : ''}
-              {d.comment ? ` – ${d.comment}` : ''}
-            </span>
-            <div>
-              <span>{d.price}₫</span>
-              <span
-                className="text-red-500 cursor-pointer ml-4"
-                onClick={() => removeDish(d.dishId)}
-              >
-                ✕
-              </span>
-            </div>
-          </li>
-        ))}
-      </ul>
-      <div className="flex justify-between mt-2 font-semibold">
-        <span>Total:</span>
-        <span>{total}₫</span>
-      </div>
-      <button
-        onClick={handleSubmit}
-        className="mt-2 w-full bg-blue-600 text-white py-2 rounded"
-        disabled={submitting}
-      >
-        {submitting 
-          ? 'Updating...' 
-          : currentOrderId 
-            ? 'Add to Current Order' 
-            : 'Submit Order'}
-      </button>
-    </div>
+    <Drawer open={open} onOpenChange={onOpenChange}>
+      <DrawerContent className="rounded-t-3xl !p-0 !pb-4 bg-white shadow-2xl">
+        <DialogTitle className="sr-only">Preview order</DialogTitle>
+        <div className="p-6 pt-5">
+          <div className="flex items-center justify-between mb-6">
+            <h3 className="text-2xl font-bold">Current Order</h3>
+            <DrawerClose asChild>
+              <button className="p-2 rounded-full hover:bg-gray-100">
+                <X size={24} />
+              </button>
+            </DrawerClose>
+          </div>
+          <div className="divide-y">
+            {dishes.map((d, i) => (
+              <div key={i} className="flex items-center py-4 gap-4">
+                <img
+                  src="https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png"
+                  alt={d.name}
+                  className="w-14 h-14 object-cover rounded-lg"
+                />
+                <div className="flex-1 min-w-0">
+                  <div className="font-semibold text-base truncate">{d.name}</div>
+                  <div className="text-gray-500 text-sm truncate">
+                    {d.addons.map(a => a.name).join(' • ')}
+                    {d.comment ? ` • ${d.comment}` : ''}
+                  </div>
+                  <div className="mt-1">
+                    <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Preparing</span>
+                  </div>
+                </div>
+                <div className="text-right flex flex-col items-end gap-2">
+                  <div className="font-semibold text-lg">₫{d.price.toLocaleString()}</div>
+                  <div className="flex items-center space-x-2">
+                    <button
+                      className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-300"
+                      onClick={() => removeDish(d.dishId)}
+                    >
+                      <span className="text-base">–</span>
+                    </button>
+                    <span className="text-base font-medium">1</span>
+                    <button
+                      className="w-7 h-7 bg-gray-300 text-white rounded-full flex items-center justify-center opacity-50 cursor-not-allowed"
+                      disabled
+                    >
+                      <span className="text-base">+</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="px-6 pb-6">
+          <div className="flex justify-between items-center mb-4">
+            <span className="font-semibold text-lg">Total</span>
+            <span className="text-xl font-bold text-red-500">₫{total.toLocaleString()}</span>
+          </div>
+          <OrderDishesButton
+            total={total}
+            count={dishes.length}
+            onClick={handleSubmit}
+            disabled={submitting}
+          >
+            {submitting ? 'Sending...' : 'Send to kitchen'}
+          </OrderDishesButton>
+        </div>
+      </DrawerContent>
+    </Drawer>
   );
 };

@@ -2,12 +2,14 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
 import { hasActiveCall as checkActiveCall, CallsService } from './services/calls.service';
+import { Bell } from 'lucide-react';
 
 interface WaiterCallProps {
   className?: string;
+  iconOnly?: boolean;
 }
 
-export const WaiterCall = ({ className }: WaiterCallProps) => {
+export const WaiterCall = ({ className = '', iconOnly = false }: WaiterCallProps) => {
   const { t } = useTranslation();
   const { tableId } = useTable();
   const [isCalling, setIsCalling] = useState(false);
@@ -36,6 +38,19 @@ export const WaiterCall = ({ className }: WaiterCallProps) => {
       setIsCalling(false);
     }
   };
+
+  if (iconOnly) {
+    return (
+      <button
+        onClick={handleCallWaiter}
+        disabled={isCalling || hasActiveCall}
+        className={`w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        aria-label={t('call_waiter')}
+      >
+        <Bell size={20} />
+      </button>
+    );
+  }
 
   return (
     <button
