@@ -95,7 +95,7 @@ const MenuOrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
   return (
     <div className="fixed left-0 right-0 bottom-0 z-[110] px-4 pb-4 pointer-events-none">
       <div className="max-w-xl mx-auto">
-        <OrderDishesButton total={total} count={dishes.length} onClick={onOpen}>
+        <OrderDishesButton total={total} iconPosition='left' count={dishes.length} onClick={onOpen}>
           Order dishes
         </OrderDishesButton>
       </div>

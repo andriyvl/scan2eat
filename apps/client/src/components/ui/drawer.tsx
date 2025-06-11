@@ -25,19 +25,29 @@ DrawerOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 const DrawerContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
+    isOverlayImage?: boolean
+  }
+>(({ className, children, isOverlayImage = false, ...props }, ref) => (
   <DrawerPortal>
     <DrawerOverlay />
     <DialogPrimitive.Content
       ref={ref}
       className={cn(
-        "fixed inset-0 z-[100] flex flex-col bg-transparent p-0 m-0 overflow-y-auto",
+        isOverlayImage 
+          ? "fixed inset-0 z-[100] flex items-end justify-center bg-transparent p-0 m-0"
+          : "fixed inset-0 z-[100] flex flex-col bg-transparent p-0 m-0 overflow-y-auto",
         className
       )}
       {...props}
     >
-      {children}
+      {isOverlayImage ? (
+        <div className="w-full max-w-md mx-auto rounded-t-3xl bg-white shadow-2xl max-h-[90vh] overflow-y-auto">
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </DialogPrimitive.Content>
   </DrawerPortal>
 ))

@@ -1,3 +1,4 @@
+import { Utensils } from 'lucide-react';
 import React from 'react';
 
 export const AddDishButton = ({ total, count, onClick, disabled, children }: {
@@ -14,6 +15,10 @@ export const AddDishButton = ({ total, count, onClick, disabled, children }: {
     style={{ minWidth: 320 }}
   >
     <div className="flex items-center gap-3">
+
+    <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20">
+    <Utensils size={22} />
+          </span>
       {count ? (
         <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 font-bold text-base mr-2">{count}</span>
       ) : null}
