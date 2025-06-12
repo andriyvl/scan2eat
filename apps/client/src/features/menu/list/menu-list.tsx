@@ -4,8 +4,10 @@ import { DishCard } from '../dish/dish-card';
 import { getMenuCategories, getDishes } from '../../../services/api.service';
 import { Clock } from 'lucide-react';
 import { useOrderStore } from '@/features/order/order.store';
-import { OrderDishesButton } from '@/features/order/creation/order-dishes-button';
+import OrderDishesButton from '@/features/order/creation/order-dishes-button';
 import { OrderPreview } from '@/features/order/creation/order-preview';
+import { CategoryTabs } from './category-tabs';
+import { OrderProgressBanner } from './order-progress-banner';
 
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -36,69 +38,22 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
     : dishes.filter(dish => dish.categoryId === selectedCategory);
 
   return (
-    <div className="space-y-6">
-      {/* Order in progress banner */}
-      {orderInProgress && (
-        <div className="bg-amber-50 border-l-4 border-amber-400 p-3 mx-4 mt-3 rounded-r-lg flex items-center space-x-2">
-          <Clock className="text-amber-600 w-5 h-5" />
-          <span className="text-sm font-medium text-amber-800">Order in progress</span>
-          <span className="text-xs text-amber-600">• 2 dishes preparing</span>
-        </div>
-      )}
-      {/* Category Tabs */}
-      <div className="bg-white sticky top-16 z-40 border-b border-gray-200">
-        <div className="flex overflow-x-auto scrollbar-hide px-4 py-2">
-          <button
-            className={`category-tab px-4 py-2 text-sm font-medium whitespace-nowrap ${
-              selectedCategory === 'all' ? 'active' : 'text-gray-600'
-            }`}
-            onClick={() => setSelectedCategory('all')}
-          >
-            All
-          </button>
-          {categories
-            .sort((a, b) => a.sortOrder - b.sortOrder)
-            .map((cat) => (
-              <button
-                key={cat.id}
-                className={`category-tab px-4 py-2 text-sm font-medium whitespace-nowrap ${
-                  selectedCategory === cat.id ? 'active' : 'text-gray-600'
-                }`}
-                onClick={() => setSelectedCategory(cat.id)}
-              >
-                {cat.categoryName}
-              </button>
-            ))}
-        </div>
+    <div className="flex flex-col h-full min-h-0">
+      <div className="sticky top-0 z-20 bg-white">
+        <OrderProgressBanner orderInProgress={orderInProgress} />
+        <CategoryTabs categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </div>
-
-      {/* Menu Items */}
+      <div className="flex-1 min-h-0 overflow-y-auto">
       <div className="p-4 space-y-4">
         {filteredDishes.map((dish) => (
           <DishCard key={dish.id} dish={dish} onPreviewOpen={setDishPreviewOpen} />
         ))}
       </div>
-      {/* Fixed OrderDishesButton at bottom, only when no drawers open */}
+      </div>
       {!(dishPreviewOpen || orderDrawerOpen) && (
-        <MenuOrderDishesButton onOpen={() => setOrderDrawerOpen(true)} />
+        <OrderDishesButton onOpen={() => setOrderDrawerOpen(true)} />
       )}
       <OrderPreview open={orderDrawerOpen} onOpenChange={setOrderDrawerOpen} />
-    </div>
-  );
-};
-
-// Helper component for fixed order button
-const MenuOrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
-  const { dishes } = useOrderStore();
-  const total = dishes.reduce((sum, d) => sum + d.price, 0);
-  if (!dishes.length) return null;
-  return (
-    <div className="fixed left-0 right-0 bottom-0 z-[110] px-4 pb-4 pointer-events-none">
-      <div className="max-w-xl mx-auto">
-        <OrderDishesButton total={total} iconPosition='left' count={dishes.length} onClick={onOpen}>
-          Order dishes
-        </OrderDishesButton>
-      </div>
     </div>
   );
 };

@@ -1,0 +1,29 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+Scope First: Look at all the changes in your commit.
+Pick the Primary Prefix: Choose the single best prefix (like feat: for a new feature, fix: for a bug fix) that describes the main purpose of the commit.
+Rule: If you add any new feature, even alongside fixes, it's a feat:. Only use fix: if all changes are fixes.
+Be Specific, But Concise: Use other prefixes (e.g., docs:, refactor:, perf:, test:, chore:) when they accurately describe significant parts of the commit. Don't overuse them; focus on the primary intent.
+Clear & Concise Message: Write a short, descriptive subject line (the part after the prefix) that explains what the commit does. Avoid excessive detail.
+Split Big Commits: If your changes involve multiple unrelated features, or a mix of features and build/CI/CD changes, split them into separate commits. This prevents conflicts and makes it easier to track and revert specific changes if needed. Features, build, and CI/CD changes should ideally be independent commits.
+
+Syntax example of the commit message:
+'feat: added order details screen, fix ui bugs, created order-service'
+
+## 🧾 Commit Convention (Conventional Commits)
+
+| Prefix      | Use Case                          |
+|-------------|-----------------------------------|
+| `feat`      | New feature                       |
+| `fix`       | Bug fix                           |
+| `build`     | Build/config/deps/tools changes   |
+| `refactor`  | Code restructure (no logic change)|
+| `style`     | Formatting                        |
+| `docs`      | Documentation only                |
+| `test`      | Tests                             |
+| `chore`     | Minor changes / maintenance       |
+| `ci`        | CI/CD changes                     |
+| `perf`      | Performance improvement           |

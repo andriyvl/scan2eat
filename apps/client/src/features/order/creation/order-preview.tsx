@@ -5,8 +5,8 @@ import { useTable } from '@/contexts/table.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
-import { X, Utensils, ChefHat } from 'lucide-react';
-import { OrderDishesButton } from './order-dishes-button';
+import { X, ChefHat } from 'lucide-react';
+import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
 
 export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
@@ -49,7 +49,7 @@ export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChan
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent isBackgroundImage className="!p-0 !m-0 !bg-transparent">
+      <DrawerContent isOverlayImage className="!p-0 !m-0 !bg-transparent">
         <div className="bg-white rounded-t-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
           <DialogTitle className="sr-only">Preview order</DialogTitle>
           <div className="p-6 pt-5">
@@ -105,14 +105,16 @@ export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChan
                 <span className="font-semibold text-lg">Total</span>
                 <span className="text-xl font-bold text-red-500">₫{total.toLocaleString()}</span>
               </div>
-              <OrderDishesButton
+              <SendToKitchenButton
                 onClick={handleSubmit}
                 disabled={submitting}
                 icon={<ChefHat size={22} />}
                 iconPosition="right"
+                total={total}
+                count={dishes.length}
               >
                 {submitting ? 'Sending...' : 'Send to kitchen'}
-              </OrderDishesButton>
+              </SendToKitchenButton>
             </div>
           </div>
         </div>

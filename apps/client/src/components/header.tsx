@@ -10,14 +10,14 @@ const LANGUAGES = [
   // Add more languages as needed
 ];
 
-export const AppHeader = () => {
+export const Header = () => {
   const { t, i18n } = useTranslation();
   const { restaurantName, tableId } = useTable();
   const [langDropdown, setLangDropdown] = useState(false);
   const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
 
   return (
-    <header className="bg-white shadow-sm sticky top-0 z-50 rounded-2xl border mx-2 mt-2">
+    <header className="bg-white sticky top-0 z-50">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">

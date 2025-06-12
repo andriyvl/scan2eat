@@ -4,6 +4,7 @@ import { X, Heart, CheckCircle2, Briefcase } from 'lucide-react';
 import type { Dish } from '@/types/types';
 import { AddDishButton } from '@/features/order/creation/add-dish-button';
 import { useOrderStore } from '@/features/order/order.store';
+import { DialogTitle } from '@radix-ui/react-dialog';
 
 interface DishPreviewDrawerProps {
   open: boolean;
@@ -58,6 +59,7 @@ export const DishPreviewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOp
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="!p-0 !m-0 !bg-transparent">
+        <DialogTitle className="sr-only">Dish details</DialogTitle>
         {/* Top image, edge-to-edge */}
         <div className="relative w-full" style={{height: '240px'}}>
           <img
