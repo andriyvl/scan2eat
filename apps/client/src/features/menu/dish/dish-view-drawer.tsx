@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { X, Heart, CheckCircle2, Briefcase } from 'lucide-react';
 import type { Dish } from '@/types/types';
-import { AddDishButton } from '@/features/order/creation/add-dish-button';
+import { AddDishButton } from '@/features/menu/dish/add-dish-button';
 import { useOrderStore } from '@/features/order/order.store';
 import { DialogTitle } from '@radix-ui/react-dialog';
 
@@ -22,7 +22,7 @@ const ADDONS = [
   { name: 'Extra Herbs', desc: 'Fresh basil & cilantro', price: 0 },
 ];
 
-export const DishPreviewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
+export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
   const [selectedAddons, setSelectedAddons] = React.useState<string[]>([]);
   const [takeaway, setTakeaway] = React.useState(false);
   const [comment, setComment] = React.useState('');

@@ -8,8 +8,9 @@ import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { X, ChefHat } from 'lucide-react';
 import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { OrderProgressBanner } from '../status/order-progress-banner';
 
-export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
+export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
   const { tableId } = useTable();
@@ -53,7 +54,7 @@ export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChan
         <div className="bg-white rounded-t-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
           <DialogTitle className="sr-only">Preview order</DialogTitle>
           <div className="p-6 pt-5">
-            <div className="flex items-center justify-between mb-6">
+            <div className="flex items-center justify-between mb-4">
               <h3 className="text-2xl font-bold">Order preview</h3>
               <DrawerClose asChild>
                 <button className="p-2 rounded-full hover:bg-gray-100">
@@ -62,6 +63,9 @@ export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChan
               </DrawerClose>
             </div>
             <div className="divide-y">
+              <div className="mb-2">
+                <OrderProgressBanner orderInProgress={true} />
+              </div>
               {dishes.map((d, i) => (
                 <div key={i} className="flex items-center py-4 gap-4">
                   <img
@@ -110,8 +114,6 @@ export const OrderPreview = ({ open, onOpenChange }: { open: boolean, onOpenChan
                 disabled={submitting}
                 icon={<ChefHat size={22} />}
                 iconPosition="right"
-                total={total}
-                count={dishes.length}
               >
                 {submitting ? 'Sending...' : 'Send to kitchen'}
               </SendToKitchenButton>

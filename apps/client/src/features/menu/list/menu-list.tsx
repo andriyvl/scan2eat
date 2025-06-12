@@ -4,10 +4,10 @@ import { DishCard } from '../dish/dish-card';
 import { getMenuCategories, getDishes } from '../../../services/api.service';
 import { Clock } from 'lucide-react';
 import { useOrderStore } from '@/features/order/order.store';
-import OrderDishesButton from '@/features/order/creation/order-dishes-button';
-import { OrderPreview } from '@/features/order/creation/order-preview';
+import OrderDishesButton from '@/features/order/preview/preview-order-button';
+import { OrderPreviewDrawer } from '@/features/order/preview/order-preview-drawer';
 import { CategoryTabs } from './category-tabs';
-import { OrderProgressBanner } from './order-progress-banner';
+import { OrderProgressBanner } from '../../order/status/order-progress-banner';
 
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -44,7 +44,7 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
         <CategoryTabs categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">
-      <div className="p-4 space-y-4">
+      <div className="py-4 space-y-4">
         {filteredDishes.map((dish) => (
           <DishCard key={dish.id} dish={dish} onPreviewOpen={setDishPreviewOpen} />
         ))}
@@ -53,7 +53,7 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
       {!(dishPreviewOpen || orderDrawerOpen) && (
         <OrderDishesButton onOpen={() => setOrderDrawerOpen(true)} />
       )}
-      <OrderPreview open={orderDrawerOpen} onOpenChange={setOrderDrawerOpen} />
+      <OrderPreviewDrawer open={orderDrawerOpen} onOpenChange={setOrderDrawerOpen} />
     </div>
   );
 };

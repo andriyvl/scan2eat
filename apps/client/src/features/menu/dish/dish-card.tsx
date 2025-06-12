@@ -2,7 +2,7 @@ import { useState } from 'react';
 import type { Dish } from '@/types/types';
 import { useLanguage } from '@/contexts/language.context';
 import { Plus } from 'lucide-react';
-import { DishPreviewDrawer } from './dish-preview-drawer';
+import { DishViewDrawer } from './dish-view-drawer';
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
@@ -62,7 +62,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
           </div>
         </div>
       </div>
-      <DishPreviewDrawer open={open} onOpenChange={handleOpen} dish={dish} />
+      <DishViewDrawer open={open} onOpenChange={handleOpen} dish={dish} />
     </>
   );
 };

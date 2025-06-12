@@ -1,4 +1,3 @@
-import React from 'react';
 import { useOrderStore } from '@/features/order/order.store';
 
 const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
@@ -15,7 +14,7 @@ const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
     >
       <div className="flex items-center gap-3">
             <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 font-bold text-base mr-2">{dishes.length}</span>
-            <span>Order dishes</span>
+            <span>Preview order</span>
       </div>
           <span className="font-bold text-xl">₫{total.toLocaleString()}</span>
         </button>
