@@ -45,8 +45,8 @@ export interface OrderDish {
   addons: OrderAddon[];
   comment?: string;
   takeaway: boolean;
-  status: 'awaiting' | 'preparing' | 'ready' | 'dish_delivered';
-};
+  status: DishStatus;
+}
 
 export interface Order {
   id: string;
@@ -54,9 +54,25 @@ export interface Order {
   language: string;
   isTakeaway: boolean;
   orderComment: string;
-  status: 'pending' | 'in_progress' | 'delivered' | 'requires_attention' | 'awaiting_payment' | 'paid';
+  status: OrderStatus;
   dishes: OrderDish[];
   price: number;
   createdAt: Timestamp;
   updatedAt: Timestamp;
+}
+
+export enum OrderStatus {
+  Pending = 'pending',
+  InProgress = 'in_progress',
+  Delivered = 'delivered',
+  RequiresAttention = 'requires_attention',
+  AwaitingPayment = 'awaiting_payment',
+  Paid = 'paid',
+}
+
+export enum DishStatus {
+  Awaiting = 'awaiting',
+  Preparing = 'preparing',
+  Ready = 'ready',
+  DishDelivered = 'dish_delivered',
 } 

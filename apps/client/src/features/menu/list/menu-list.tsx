@@ -1,19 +1,16 @@
 import { useEffect, useState } from 'react';
-import type { Dish, MenuCategory } from '@/types/types';
+import { OrderStatus, type Dish, type MenuCategory } from '@/types/types';
 import { DishCard } from '../dish/dish-card';
 import { getMenuCategories, getDishes } from '../../../services/api.service';
-import { Clock } from 'lucide-react';
-import { useOrderStore } from '@/features/order/order.store';
 import OrderDishesButton from '@/features/order/preview/preview-order-button';
 import { OrderPreviewDrawer } from '@/features/order/preview/order-preview-drawer';
 import { CategoryTabs } from './category-tabs';
-import { OrderProgressBanner } from '../../order/status/order-progress-banner';
+import { OrderStatusBanner } from '../../order/status/order-status-banner';
 
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [orderInProgress, setOrderInProgress] = useState(false);
   const [orderDrawerOpen, setOrderDrawerOpen] = useState(false);
   const [dishPreviewOpen, setDishPreviewOpen] = useState(false);
 
@@ -29,10 +26,6 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
     fetchMenu();
   }, [restaurantId]);
 
-  useEffect(() => {
-    setOrderInProgress(!!localStorage.getItem('currentOrderId'));
-  }, []);
-
   const filteredDishes = selectedCategory === 'all' 
     ? dishes 
     : dishes.filter(dish => dish.categoryId === selectedCategory);
@@ -40,7 +33,7 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="sticky top-0 z-20 bg-white">
-        <OrderProgressBanner orderInProgress={orderInProgress} />
+        <OrderStatusBanner status={OrderStatus.Paid} />
         <CategoryTabs categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">

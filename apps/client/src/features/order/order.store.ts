@@ -20,7 +20,7 @@ export const useOrderStore = create<OrderStore>((set) => ({
       dishes: state.dishes.filter((d) => d.dishId !== dishId),
     })),
   clearOrder: () => set({ dishes: [] }),
-  updateDish: (dishId, updater) =>
+updateDish: (dishId, updater) =>
     set((state) => ({
       dishes: state.dishes.map((dish) =>
         dish.dishId === dishId ? updater(dish) : dish

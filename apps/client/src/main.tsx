@@ -1,6 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
+
 import { App } from './app';
 import './config/i18n.config';
 import { loadTranslations } from './config/i18n.config';

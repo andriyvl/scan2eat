@@ -11,8 +11,8 @@ export const TableEntryPage = () => {
 
   useEffect(() => {
     const initializeContext = async () => {
-      if (restaurantId && tableId) {
-        console.log('[TableEntry] Params:', { restaurantId, tableId });
+    if (restaurantId && tableId) {
+      console.log('[TableEntry] Params:', { restaurantId, tableId });
         
         // Fetch restaurant name
         try {
@@ -22,8 +22,8 @@ export const TableEntryPage = () => {
           setContext(restaurantId, tableId, restaurantName);
         } catch (error) {
           console.error('Error fetching restaurant:', error);
-          setContext(restaurantId, tableId);
-        }
+      setContext(restaurantId, tableId);
+    }
       }
     };
 

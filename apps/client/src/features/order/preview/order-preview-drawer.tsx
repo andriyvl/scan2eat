@@ -8,8 +8,8 @@ import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
 import { X, ChefHat } from 'lucide-react';
 import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
-import { OrderProgressBanner } from '../status/order-progress-banner';
-
+import { OrderStatusBanner } from '../status/order-status-banner';
+import { OrderStatus } from '@/types/types'
 export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
@@ -64,7 +64,7 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
             </div>
             <div className="divide-y">
               <div className="mb-2">
-                <OrderProgressBanner orderInProgress={true} />
+                <OrderStatusBanner status={OrderStatus.Pending} />
               </div>
               {dishes.map((d, i) => (
                 <div key={i} className="flex items-center py-4 gap-4">
