@@ -4,22 +4,7 @@ export type Addon = {
     custom?: boolean;
   };
   
-  export type Dish = {
-    id: string;
-    name: string;
-    description: string;
-    image?: string;
-    basePrice: number;
-    addons: Addon[];
-    categoryId: string;
-    tags?: string[];
-    translations?: {
-      [key: string]: {
-        name: string;
-        description: string;
-      };
-    };
-  };
+
   
   export type MenuCategory = {
     id: string;
@@ -36,13 +21,29 @@ export interface OrderAddon {
   price: number;
 }
 
+export type Dish = {
+  id: string;
+  name: string;
+  description: string;
+  image?: string;
+  basePrice: number;
+  addons: Addon[];
+  categoryId: string;
+  tags?: string[];
+  translations?: {
+    [key: string]: {
+      name: string;
+      description: string;
+    };
+  };
+};
 
 export interface OrderDish {
   dishId: string;
   name: string;
-  basePrice: number;
-  price: number;
-  addons: OrderAddon[];
+  basePrice: number; // price of the dish without addons
+  price: number; // price of the dish with addons
+  addons: OrderAddon[]; // selected addons
   comment?: string;
   takeaway: boolean;
   status: DishStatus;

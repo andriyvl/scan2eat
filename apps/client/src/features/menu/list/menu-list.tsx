@@ -5,7 +5,7 @@ import { getMenuCategories, getDishes } from '../../../services/api.service';
 import OrderDishesButton from '@/features/order/preview/preview-order-button';
 import { OrderPreviewDrawer } from '@/features/order/preview/order-preview-drawer';
 import { CategoryTabs } from './category-tabs';
-import { OrderStatusBanner } from '../../order/status/order-status-banner';
+import { OrderStatusBanner } from '../../order/current/order-status-banner';
 
 export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -39,7 +39,7 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
       <div className="flex-1 min-h-0 overflow-y-auto">
       <div className="py-4 space-y-4">
         {filteredDishes.map((dish) => (
-          <DishCard key={dish.id} dish={dish} onPreviewOpen={setDishPreviewOpen} />
+          <DishCard key={`menu-dish-${dish.id}`} dish={dish} onPreviewOpen={setDishPreviewOpen} />
         ))}
       </div>
       </div>

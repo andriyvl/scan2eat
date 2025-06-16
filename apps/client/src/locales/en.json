@@ -17,6 +17,9 @@
         "qr": "QR Code",
         "card": "Credit Card",
         "cash": "Cash"
-    }
+    },
+    "takeaway": "Takeaway",
+    "takeaway_description": "Pack for takeout",
+    "add_to_cart": "Add to Cart"
 }
   

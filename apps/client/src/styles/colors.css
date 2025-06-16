@@ -1,58 +1,68 @@
-/* === Status Colors === */
+
 :root {
-  /* Pending */
-  --order-status-pending-bg: #fef9c3; /* yellow-50 */
-  --order-status-pending-border: #facc15; /* yellow-400 */
-  --order-status-pending-icon: #ca8a04; /* yellow-600 */
-  --order-status-pending-text: #854d0e; /* yellow-800 */
-  --order-status-pending-text-secondary: #ca8a04; /* yellow-600 */
+  --main-bg: #f5f5f5;
 
-  /* In Progress */
-  --order-status-in-progress-bg: #fffbeb; /* amber-50 */
-  --order-status-in-progress-border: #fbbf24; /* amber-400 */
-  --order-status-in-progress-icon: #d97706; /* amber-600 */
-  --order-status-in-progress-text: #92400e; /* amber-800 */
-  --order-status-in-progress-text-secondary: #d97706; /* amber-600 */
 
-  /* Delivered */
-  --order-status-delivered-bg: #f0fdf4; /* green-50 */
-  --order-status-delivered-border: #4ade80; /* green-400 */
-  --order-status-delivered-icon: #16a34a; /* green-600 */
-  --order-status-delivered-text: #166534; /* green-800 */
-  --order-status-delivered-text-secondary: #16a34a; /* green-600 */
+/* === Status Colors === */
+  /* Order Status Colors */
+  --order-status-pending-bg: #fff8dc; /* Gold (light) */
+  --order-status-pending-border: #ffd700; /* Gold */
+  --order-status-pending-icon: #b8860b; /* Dark Gold */
+  --order-status-pending-text: #b8860b; /* Dark Gold */
+  --order-status-pending-text-secondary: #ffd700; /* Gold */
 
-  /* Requires Attention */
-  --order-status-requires-attention-bg: #fff7ed; /* orange-50 */
-  --order-status-requires-attention-border: #fb923c; /* orange-400 */
-  --order-status-requires-attention-icon: #ea580c; /* orange-600 */
-  --order-status-requires-attention-text: #9a3412; /* orange-800 */
-  --order-status-requires-attention-text-secondary: #ea580c; /* orange-600 */
+  --order-status-in-progress-bg: #e6f0ff; /* Dodger Blue (light) */
+  --order-status-in-progress-border: #1e90ff; /* Dodger Blue */
+  --order-status-in-progress-icon: #104e8b; /* Dodger Blue (dark) */
+  --order-status-in-progress-text: #104e8b; /* Dodger Blue (dark) */
+  --order-status-in-progress-text-secondary: #1e90ff; /* Dodger Blue */
 
-  /* Awaiting Payment */
-  --order-status-awaiting-payment-bg: #eff6ff; /* blue-50 */
-  --order-status-awaiting-payment-border: #60a5fa; /* blue-400 */
-  --order-status-awaiting-payment-icon: #2563eb; /* blue-600 */
-  --order-status-awaiting-payment-text: #1e40af; /* blue-800 */
-  --order-status-awaiting-payment-text-secondary: #2563eb; /* blue-600 */
+  --order-status-delivered-bg: #f0fff0; /* Lime Green (light) */
+  --order-status-delivered-border: #32cd32; /* Lime Green */
+  --order-status-delivered-icon: #228b22; /* Forest Green */
+  --order-status-delivered-text: #228b22; /* Forest Green */
+  --order-status-delivered-text-secondary: #32cd32; /* Lime Green */
 
-  /* Paid */
-  --order-status-paid-bg: #f0fdf4; /* green-50 */
-  --order-status-paid-border: #4ade80; /* green-400 */
-  --order-status-paid-icon: #16a34a; /* green-600 */
-  --order-status-paid-text: #166534; /* green-800 */
-  --order-status-paid-text-secondary: #16a34a; /* green-600 */
+  --order-status-requires-attention-bg: #fff5f0; /* Orange Red (light) */
+  --order-status-requires-attention-border: #ff4500; /* Orange Red */
+  --order-status-requires-attention-icon: #b22222; /* Firebrick */
+  --order-status-requires-attention-text: #b22222; /* Firebrick */
+  --order-status-requires-attention-text-secondary: #ff4500; /* Orange Red */
 
-  /* Legacy variables - keeping for backward compatibility */
-  --order-status-pending: var(--order-status-pending-bg);
-  --order-status-in-progress: var(--order-status-in-progress-bg);
-  --order-status-delivered: var(--order-status-delivered-bg);
-  --order-status-requires-attention: var(--order-status-requires-attention-bg);
-  --order-status-awaiting-payment: var(--order-status-awaiting-payment-bg);
-  --order-status-paid: var(--order-status-paid-bg);
+  --order-status-awaiting-payment-bg: #fff0e6; /* Light Salmon (light) */
+  --order-status-awaiting-payment-border: #ffa07a; /* Light Salmon */
+  --order-status-awaiting-payment-icon: #e9967a; /* Dark Salmon */
+  --order-status-awaiting-payment-text: #e9967a; /* Dark Salmon */
+  --order-status-awaiting-payment-text-secondary: #ffa07a; /* Light Salmon */
 
-  /* Dish status colors - keeping for backward compatibility */
-  --dish-status-awaiting: #f3f4f6; /* gray-100 */
-  --dish-status-preparing: #fef9c3; /* yellow-100 */
-  --dish-status-ready: #16a34a; /* green-600 */
-  --dish-status-dish-delivered: #f3f4f6; /* gray-100 */
+  --order-status-paid-bg: #f0fff0; /* Forest Green (light) */
+  --order-status-paid-border: #228b22; /* Forest Green */
+  --order-status-paid-icon: #006400; /* Dark Green */
+  --order-status-paid-text: #006400; /* Dark Green */
+  --order-status-paid-text-secondary: #228b22; /* Forest Green */
+
+  /* Dish Status Colors */
+  --dish-status-awaiting-bg: #fff8dc;
+  --dish-status-awaiting-border: #ffd700;
+  --dish-status-awaiting-icon: #b8860b;
+  --dish-status-awaiting-text: #b8860b;
+  --dish-status-awaiting-text-secondary: #ffd700;
+
+  --dish-status-preparing-bg: #e6f0ff;
+  --dish-status-preparing-border: #1e90ff;
+  --dish-status-preparing-icon: #104e8b;
+  --dish-status-preparing-text: #104e8b;
+  --dish-status-preparing-text-secondary: #1e90ff;
+
+  --dish-status-ready-bg: #fff5f0;
+  --dish-status-ready-border: #ff4500;
+  --dish-status-ready-icon: #b22222;
+  --dish-status-ready-text: #b22222;
+  --dish-status-ready-text-secondary: #ff4500;
+
+  --dish-status-dish-delivered-bg: #f0fff0;
+  --dish-status-dish-delivered-border: #32cd32;
+  --dish-status-dish-delivered-icon: #228b22;
+  --dish-status-dish-delivered-text: #228b22;
+  --dish-status-dish-delivered-text-secondary: #32cd32;
 }

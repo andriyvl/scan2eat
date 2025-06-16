@@ -3,6 +3,8 @@ import { useTable } from '@/contexts/table.context';
 import { Utensils } from 'lucide-react';
 import { useState } from 'react';
 import { WaiterCall } from '@/features/call/waiter-call';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 
 const LANGUAGES = [
   { code: 'vi', label: 'VI', flag: '🇻🇳' },
@@ -15,14 +17,32 @@ export const Header = () => {
   const { restaurantName, tableId } = useTable();
   const [langDropdown, setLangDropdown] = useState(false);
   const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
+  const location = useLocation();
+  const navigate = useNavigate();
+  const showBack = location.pathname.includes('/order/');
 
   return (
     <header className="bg-white sticky top-0 z-50">
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center space-x-3">
-          <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
+          {showBack && (
+            <button
+              className="mr-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
+              onClick={() => {
+                if (restaurantName && tableId) {
+                  navigate(`/${restaurantName}/${tableId}`);
+                } else {
+                  navigate(-1);
+                }
+              }}
+              aria-label={t('back_to_menu') || 'Back to menu'}
+            >
+              <ArrowLeft className="w-5 h-5 text-gray-700" />
+            </button>
+          )}
+          {!showBack && <div className="w-10 h-10 bg-red-500 rounded-full flex items-center justify-center">
             <Utensils className="text-white" size={20} />
-          </div>
+          </div>}
           <div>
             <h1 className="font-bold text-lg text-gray-900">{restaurantName || t('welcome')}</h1>
             <p className="text-xs text-gray-500">Table {tableId}</p>

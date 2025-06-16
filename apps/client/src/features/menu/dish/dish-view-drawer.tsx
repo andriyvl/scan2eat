@@ -1,10 +1,15 @@
 import * as React from 'react';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
-import { X, Heart, CheckCircle2, Briefcase } from 'lucide-react';
+import { X, Heart, Briefcase } from 'lucide-react';
 import type { Dish } from '@/types/types';
-import { AddDishButton } from '@/features/menu/dish/add-dish-button';
+import { AddToCardButton } from '@/features/menu/dish/add-to-card-button';
 import { useOrderStore } from '@/features/order/order.store';
 import { DialogTitle } from '@radix-ui/react-dialog';
+import { DishStatus } from '@/types/types';
+import { SelectButton } from '@/components/ui/select-button';
+import { IconButton } from "@/components/ui/icon-button";
+import { useTranslation } from 'react-i18next';
+import { ToggleOption } from "@/components/ui/toggle-option";
 
 interface DishPreviewDrawerProps {
   open: boolean;
@@ -23,6 +28,7 @@ const ADDONS = [
 ];
 
 export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
+  const { t } = useTranslation();
   const [selectedAddons, setSelectedAddons] = React.useState<string[]>([]);
   const [takeaway, setTakeaway] = React.useState(false);
   const [comment, setComment] = React.useState('');
@@ -46,9 +52,9 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
       basePrice: dish.basePrice,
       price: total,
       addons: ADDONS.filter(a => selectedAddons.includes(a.name)).map(a => ({ name: a.name, price: a.price })),
-      comment: comment.trim() || undefined,
+      comment: comment.trim() || "",
       takeaway,
-      status: 'awaiting',
+      status: DishStatus.Awaiting,
     });
     setTimeout(() => {
       setAdding(false);
@@ -70,16 +76,23 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
             style={{height: '240px'}}
           />
           {/* X and heart icons overlayed */}
-          <button
+          <IconButton
             onClick={() => onOpenChange(false)}
-            className="absolute top-4 left-4 bg-white/80 hover:bg-white rounded-full p-2 shadow z-10"
+            variant="outline"
+            size="md"
+            className="absolute top-4 left-4 z-10"
             aria-label="Close"
           >
-            <X className="text-red-500" />
-          </button>
-          <button className="absolute top-4 right-4 bg-white/80 hover:bg-white rounded-full p-2 shadow z-10" aria-label="Favorite">
-            <Heart className="text-red-500" />
-          </button>
+            <X />
+          </IconButton>
+          <IconButton
+            variant="outline"
+            size="md"
+            className="absolute top-4 right-4 z-10"
+            aria-label="Favorite"
+          >
+            <Heart />
+          </IconButton>
         </div>
         {/* Main content with rounded top corners, starts below image */}
         <div className="bg-white rounded-t-3xl -mt-8 pt-8 px-6 pb-32 relative z-10 shadow-xl">
@@ -105,42 +118,26 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
               {ADDONS.map((addon) => {
                 const selected = selectedAddons.includes(addon.name);
                 return (
-                  <button
+                  <SelectButton
                     key={addon.name}
+                    isSelected={selected}
                     onClick={() => toggleAddon(addon.name)}
-                    className={`flex items-center justify-between p-4 rounded-2xl border-2 transition-all text-left ${
-                      selected
-                        ? 'border-red-400 bg-red-50'
-                        : 'border-gray-200 bg-white hover:border-red-300'
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {selected && <CheckCircle2 className="text-red-500 w-5 h-5" />}
-                      <div>
-                        <div className={`font-semibold ${selected ? 'text-red-500' : 'text-gray-900'}`}>{addon.name}</div>
-                        <div className="text-xs text-gray-500">{addon.desc}</div>
-                      </div>
-                    </div>
-                    <div className={`font-semibold text-lg ${selected ? 'text-red-500' : 'text-gray-700'}`}>{addon.price > 0 ? `+₫${addon.price.toLocaleString()}` : 'Free'}</div>
-                  </button>
+                    title={addon.name}
+                    description={addon.desc}
+                    price={addon.price}
+                  />
                 );
               })}
             </div>
           </div>
           {/* Takeaway */}
-          <div className="mb-4 flex items-center justify-between bg-gray-50 rounded-xl px-4 py-3">
-            <div className="flex items-center gap-2">
-              <Briefcase className="w-5 h-5 text-gray-500" />
-              <div>
-                <div className="font-semibold">Takeaway</div>
-                <div className="text-xs text-gray-500">Pack for takeout</div>
-              </div>
-            </div>
-            <input
-              type="checkbox"
-              className="w-6 h-6 rounded border-gray-300"
+          <div className="mb-4">
+            <ToggleOption
+              icon={Briefcase}
+              title={t('takeaway')}
+              description={t('takeaway_description')}
               checked={takeaway}
-              onChange={() => setTakeaway((v) => !v)}
+              onChange={setTakeaway}
             />
           </div>
           {/* Special Instructions */}
@@ -157,9 +154,9 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
           {/* Add to Order Button (reused) */}
           <div className="fixed left-0 right-0 bottom-0 z-[110] px-4 pb-4 pointer-events-none">
             <div className="max-w-xl mx-auto">
-              <AddDishButton total={total} onClick={handleAddToOrder} disabled={adding}>
-                Add dish
-              </AddDishButton>
+              <AddToCardButton total={total} onClick={handleAddToOrder} disabled={adding}>
+                {t('add_to_cart')}
+              </AddToCardButton>
             </div>
           </div>
         </div>

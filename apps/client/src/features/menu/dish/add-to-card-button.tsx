@@ -1,7 +1,7 @@
 import { Utensils } from 'lucide-react';
 import React from 'react';
 
-export const AddDishButton = ({ total, count, onClick, disabled, children }: {
+export const AddToCardButton = ({ total, count, onClick, disabled, children }: {
   total: number;
   count?: number;
   onClick?: () => void;

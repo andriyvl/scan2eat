@@ -8,12 +8,14 @@ export default {
   theme: {
   	container: {
   		center: true,
-  		padding: "2rem",
   		screens: {
   			"2xl": "1400px",
   		},
   	},
   	extend: {
+		backgroundColor: {
+			main: 'var(--main-bg)',
+		},
   		borderRadius: {
   			lg: 'var(--radius)',
   			md: 'calc(var(--radius) - 2px)',

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
 import { hasActiveCall as checkActiveCall, CallsService } from './services/calls.service';
 import { Bell } from 'lucide-react';
+import { IconButton } from '@/components/ui/icon-button';
 
 interface WaiterCallProps {
   className?: string;
@@ -21,6 +22,7 @@ export const WaiterCall = ({ className = '', iconOnly = false }: WaiterCallProps
       const hasCall = await checkActiveCall(tableId, 'waiter_call');
       setHasActiveCall(hasCall);
     };
+    // TODO fix this. call every 2 minutes.
 
     checkCall();
   }, [tableId]);
@@ -41,14 +43,16 @@ export const WaiterCall = ({ className = '', iconOnly = false }: WaiterCallProps
 
   if (iconOnly) {
     return (
-      <button
+      <IconButton
         onClick={handleCallWaiter}
         disabled={isCalling || hasActiveCall}
-        className={`w-10 h-10 bg-red-500 text-white rounded-full flex items-center justify-center hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${className}`}
+        variant="default"
+        size="md"
+        className={className}
         aria-label={t('call_waiter')}
       >
         <Bell size={20} />
-      </button>
+      </IconButton>
     );
   }
 

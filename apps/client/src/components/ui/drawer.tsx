@@ -32,6 +32,7 @@ const DrawerContent = React.forwardRef<
   <DrawerPortal>
     <DrawerOverlay />
     <DialogPrimitive.Content
+      aria-describedby="drawer-description"
       ref={ref}
       className={cn(
         isOverlayImage 

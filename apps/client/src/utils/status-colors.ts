@@ -1,14 +1,14 @@
 import { OrderStatus, DishStatus } from '../types/types';
 
-export interface OrderStatusColors {
+export interface StatusColors {
   bg: string;
-  border: string;
-  icon: string;
   text: string;
+  icon: string;
+  border: string;
   textSecondary: string;
 }
 
-export const ORDER_STATUS_COLORS: Record<OrderStatus, OrderStatusColors> = {
+export const ORDER_STATUS_COLORS: Record<OrderStatus, StatusColors> = {
   [OrderStatus.Pending]: {
     bg: 'var(--order-status-pending-bg)',
     border: 'var(--order-status-pending-border)',
@@ -53,6 +53,45 @@ export const ORDER_STATUS_COLORS: Record<OrderStatus, OrderStatusColors> = {
   },
 };
 
+export const DISH_STATUS_COLORS: Record<DishStatus, StatusColors> = {
+  [DishStatus.Awaiting]: {
+    bg: 'var(--dish-status-awaiting-bg)',
+    border: 'var(--dish-status-awaiting-border)',
+    icon: 'var(--dish-status-awaiting-icon)',
+    text: 'var(--dish-status-awaiting-text)',
+    textSecondary: 'var(--dish-status-awaiting-text-secondary)',
+  },
+  [DishStatus.Preparing]: {
+    bg: 'var(--dish-status-preparing-bg)',
+    border: 'var(--dish-status-preparing-border)',
+    icon: 'var(--dish-status-preparing-icon)',
+    text: 'var(--dish-status-preparing-text)',
+    textSecondary: 'var(--dish-status-preparing-text-secondary)',
+  },
+  [DishStatus.Ready]: {
+    bg: 'var(--dish-status-ready-bg)',
+    border: 'var(--dish-status-ready-border)',
+    icon: 'var(--dish-status-ready-icon)',
+    text: 'var(--dish-status-ready-text)',
+    textSecondary: 'var(--dish-status-ready-text-secondary)',
+  },
+  [DishStatus.DishDelivered]: {
+    bg: 'var(--dish-status-dish-delivered-bg)',
+    border: 'var(--dish-status-dish-delivered-border)',
+    icon: 'var(--dish-status-dish-delivered-icon)',
+    text: 'var(--dish-status-dish-delivered-text)',
+    textSecondary: 'var(--dish-status-dish-delivered-text-secondary)',
+  },
+};
+
+export function getOrderStatusColors(status: OrderStatus): StatusColors {
+  return ORDER_STATUS_COLORS[status];
+}
+
+export function getDishStatusColors(status: DishStatus): StatusColors {
+  return DISH_STATUS_COLORS[status];
+}
+
 // Legacy exports - keeping for backward compatibility
 export const ORDER_STATUS_COLOR_VAR: Record<OrderStatus, string> = {
   [OrderStatus.Pending]: 'var(--order-status-pending)',
@@ -69,10 +108,6 @@ export const DISH_STATUS_COLOR_VAR: Record<DishStatus, string> = {
   [DishStatus.Ready]: 'var(--dish-status-ready)',
   [DishStatus.DishDelivered]: 'var(--dish-status-dish-delivered)',
 };
-
-export function getOrderStatusColors(status: OrderStatus): OrderStatusColors {
-  return ORDER_STATUS_COLORS[status];
-}
 
 // Legacy functions - keeping for backward compatibility
 export function getOrderStatusColorVar(status: OrderStatus): string {

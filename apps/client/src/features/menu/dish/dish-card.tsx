@@ -1,22 +1,42 @@
 import { useState } from 'react';
-import type { Dish } from '@/types/types';
+import { DishStatus, type Dish } from '@/types/types';
 import { useLanguage } from '@/contexts/language.context';
 import { Plus } from 'lucide-react';
 import { DishViewDrawer } from './dish-view-drawer';
+import { useOrderStore } from '@/features/order/order.store';
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
 export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: (open: boolean) => void }) => {
   const { language } = useLanguage();
   const [open, setOpen] = useState(false);
-
+  const setDish = useOrderStore((s) => s.setDish);
   const dishName = dish.translations?.[language]?.name ?? dish.name;
   const dishDescription = dish.translations?.[language]?.description ?? dish.description;
 
   const handleOpen = (value: boolean) => {
+    if (value) {
+      const target = event?.target as HTMLElement;
+      if (target?.closest('.add-to-order-button')) {
+        return;
+      }
+    }
     setOpen(value);
     if (onPreviewOpen) onPreviewOpen(value);
   };
+
+  function addToOrder(dish: Dish): void {
+    setDish({
+      dishId: dish.id,
+      name: dish.name,
+      basePrice: dish.basePrice,
+      price: dish.basePrice,
+      addons: [],
+      comment: "",
+      takeaway: false,
+      status: DishStatus.Awaiting,
+    });
+  }
 
   return (
     <>
@@ -56,7 +76,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
               alt={dishName}
               className="w-full h-full object-cover rounded-lg"
             />
-            <div className="absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center">
+            <div onClick={() => addToOrder(dish)} className="add-to-order-button absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center">
               <Plus size={16} />
             </div>
           </div>

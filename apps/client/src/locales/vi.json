@@ -17,6 +17,9 @@
         "qr": "Mã QR",
         "card": "Thẻ Tín Dụng",
         "cash": "Tiền Mặt"
-    }
+    },
+    "takeaway": "Mang Đi",
+    "takeaway_description": "Đóng gói để mang đi",
+    "add_to_cart": "Thêm Vào Giỏ"
 }
   

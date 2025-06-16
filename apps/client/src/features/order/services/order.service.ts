@@ -1,6 +1,9 @@
-import type { OrderDish } from '@/types/types';
+import type { Order, OrderDish } from '@/types/types';
 import { db } from '@/config/firebase.config';
 import { doc, updateDoc, arrayUnion, getDoc, addDoc, collection } from 'firebase/firestore';
+import { devtools } from 'zustand/middleware';
+import { create } from 'zustand';
+import { useOrderStore } from '../order.store';
 
 export const calculateOrderTotal = (dishes: OrderDish[]): number => {
   return dishes.reduce((total, dish) => {
@@ -28,6 +31,11 @@ export const submitNewOrder = async (
   };
 
   const docRef = await addDoc(collection(db, 'orders'), order);
+  // Fetch the created order and update the store
+  const orderSnap = await getDoc(docRef);
+  if (orderSnap.exists()) {
+    useOrderStore.getState().setCurrentOrder({ id: docRef.id, ...orderSnap.data() } as Order);
+  }
   return docRef.id;
 };
 
@@ -51,4 +59,9 @@ export const updateExistingOrder = async (
     price: newTotal,
     updatedAt: new Date()
   });
+  // Fetch the updated order and update the store
+  const updatedSnap = await getDoc(orderRef);
+  if (updatedSnap.exists()) {
+    useOrderStore.getState().setCurrentOrder({ id: orderId, ...updatedSnap.data() } as Order);
+  }
 };
