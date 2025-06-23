@@ -1,68 +1,77 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
-import { loadTranslations } from '@/config/i18n.config';
+import { loadTranslations, i18n } from '@/config/i18n.config';
+import { db as firestore } from '@/config/firebase.config';
+import { collection, getDocs } from 'firebase/firestore';
+import type { Locale } from '@/types/types';
 
 type LanguageContextValue = {
   language: string;
   setLanguage: (language: string) => void;
   isInitialized: boolean;
+  supportedLanguages: Locale[];
 };
 
 const LANGUAGE_KEY = 'scan2eat_language';
-const SUPPORTED_LANGUAGES = ['en', 'vi'];
 
 const LanguageContext = createContext<LanguageContextValue | undefined>(undefined);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState('en');
+  const [language, setLanguageState] = useState('en-US');
   const [isInitialized, setIsInitialized] = useState(false);
+  const [supportedLanguages, setSupportedLanguages] = useState<Locale[]>([]);
 
-  // Initialize language on mount
   useEffect(() => {
-    const initializeLanguage = async () => {
+    const initialize = async () => {
       try {
-        // First try to get from localStorage
+        const langCol = collection(firestore, 'languages');
+        const langSnapshot = await getDocs(langCol);
+        const fetchedLanguages: Locale[] = langSnapshot.docs.map(doc => doc.data() as Locale);
+        setSupportedLanguages(fetchedLanguages);
+        
+        const supportedLocaleIds = fetchedLanguages.map(l => l.id);
+        
+        let initialLanguage = 'en-US';
         const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
-        if (savedLanguage && SUPPORTED_LANGUAGES.includes(savedLanguage)) {
-          await loadTranslations(savedLanguage);
-          setLanguageState(savedLanguage);
-          setIsInitialized(true);
-          return;
+        if (savedLanguage && supportedLocaleIds.includes(savedLanguage)) {
+          initialLanguage = savedLanguage;
+        } else {
+          const browserLang = navigator.language;
+          if (supportedLocaleIds.includes(browserLang)) {
+            initialLanguage = browserLang;
+          } else {
+            const browserLangCode = browserLang.split('-')[0];
+            const matchingLocale = supportedLocaleIds.find(id => id.startsWith(browserLangCode));
+            if (matchingLocale) {
+              initialLanguage = matchingLocale;
+            }
+          }
         }
-
-        // Then try to get from browser
-        const browserLanguage = navigator.language.split('-')[0];
-        // Only use browser language if it's supported
-        if (SUPPORTED_LANGUAGES.includes(browserLanguage)) {
-          await loadTranslations(browserLanguage);
-          setLanguageState(browserLanguage);
-          localStorage.setItem(LANGUAGE_KEY, browserLanguage);
-          setIsInitialized(true);
-          return;
-        }
-
-        // Default to English
-        await loadTranslations('en');
-        setLanguageState('en');
-        localStorage.setItem(LANGUAGE_KEY, 'en');
-        setIsInitialized(true);
+        
+        const langCode = initialLanguage;
+        await loadTranslations(langCode);
+        i18n.changeLanguage(langCode);
+        setLanguageState(initialLanguage);
+        localStorage.setItem(LANGUAGE_KEY, initialLanguage);
       } catch (error) {
         console.error('Failed to initialize language:', error);
-        // Fallback to English if something goes wrong
-        await loadTranslations('en');
-        setLanguageState('en');
-        localStorage.setItem(LANGUAGE_KEY, 'en');
+        await loadTranslations('en-US');
+        i18n.changeLanguage('en-US');
+        setLanguageState('en-US');
+        localStorage.setItem(LANGUAGE_KEY, 'en-US');
+      } finally {
         setIsInitialized(true);
       }
     };
 
-    initializeLanguage();
+    initialize();
   }, []);
 
   const setLanguage = async (newLanguage: string) => {
-    if (!SUPPORTED_LANGUAGES.includes(newLanguage)) return;
+    if (!supportedLanguages.map(l => l.id).includes(newLanguage)) return;
     
     try {
       await loadTranslations(newLanguage);
+      i18n.changeLanguage(newLanguage);
       setLanguageState(newLanguage);
       localStorage.setItem(LANGUAGE_KEY, newLanguage);
     } catch (error) {
@@ -71,11 +80,11 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   };
 
   if (!isInitialized) {
-    return null; // or a loading spinner
+    return null;
   }
 
   return (
-    <LanguageContext.Provider value={{ language, setLanguage, isInitialized }}>
+    <LanguageContext.Provider value={{ language, setLanguage, isInitialized, supportedLanguages }}>
       {children}
     </LanguageContext.Provider>
   );

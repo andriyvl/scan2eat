@@ -4,10 +4,12 @@ import type { Order, OrderDish } from '@/types/types';
 
 type OrderStore = {
   dishes: OrderDish[];
+  isTakeaway: boolean;
   setDish: (dish: OrderDish) => void;
   removeDish: (dishId: string) => void;
   clearOrder: () => void;
   updateDish: (dishId: string, updater: (dish: OrderDish) => OrderDish) => void;
+  setIsTakeaway: (isTakeaway: boolean) => void;
   currentOrder: Order | null;
   setCurrentOrder: (order: Order) => void;
   clearCurrentOrder: () => void;
@@ -17,6 +19,7 @@ export const useOrderStore = create<OrderStore>()(
   devtools(
     (set) => ({
       dishes: [],
+      isTakeaway: false,
       setDish: (newDish) =>
         set((state) => ({
           dishes: [...state.dishes, newDish],
@@ -32,6 +35,7 @@ export const useOrderStore = create<OrderStore>()(
             dish.dishId === dishId ? updater(dish) : dish
           ),
         }), false, 'updateDish'),
+      setIsTakeaway: (isTakeaway) => set({ isTakeaway }, false, 'setIsTakeaway'),
       currentOrder: null,
       setCurrentOrder: (order) => set({ currentOrder: order }, false, 'setCurrentOrder'),
       clearCurrentOrder: () => set({ currentOrder: null }, false, 'clearCurrentOrder'),

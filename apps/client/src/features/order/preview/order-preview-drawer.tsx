@@ -1,7 +1,7 @@
 import { useOrderStore } from '../order.store';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/language.context';
-import { useTable } from '@/contexts/table.context';
+import { useQrCode } from '@/contexts/qr-code.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
@@ -14,7 +14,7 @@ import { useTranslation } from 'react-i18next';
 export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
-  const { restaurantId, qrId } = useTable();
+  const { restaurantId, qrId } = useQrCode();
   const navigate = useNavigate();
   const { t } = useTranslation();
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);

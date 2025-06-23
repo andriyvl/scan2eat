@@ -97,3 +97,11 @@ export interface Call {
     paymentMethod?: PaymentMethod;
   };
 }
+
+export interface Locale {
+  id: string;
+  nativeName: string;
+  name: string;
+  country: string;
+  flagEmoji: string;
+}

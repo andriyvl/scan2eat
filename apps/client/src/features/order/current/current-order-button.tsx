@@ -1,11 +1,11 @@
-import { useTable } from '@/contexts/table.context';
+import { useQrCode } from '@/contexts/qr-code.context';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const CurrentOrderButton = () => {
   const [orderId, setOrderId] = useState<string | null>(null);
   const navigate = useNavigate();
-  const { restaurantId, qrId } = useTable();
+  const { restaurantId, qrId } = useQrCode();
 
   useEffect(() => {
     const storedOrderId = localStorage.getItem('currentOrderId');

@@ -1,62 +1,89 @@
 {
-    "welcome": "Scan2Eat",
-    "order": "Place Order",
-    "call_waiter": "Call Waiter",
-    "calling_waiter": "Calling...",
-    "waiter_called": "Waiter has been called",
-    "waiter_call_error": "Failed to call waiter. Please try again.",
-    "request_bill": "Request Bill",
-    "requesting_bill": "Requesting Bill...",
-    "waiting_for_bill": "Waiting for Bill",
-    "bill_requested": "Bill requested",
-    "bill_request_error": "Failed to request bill. Please try again.",
-    "add_more_items": "Add more items",
-    "select_payment_method": "Select payment method",
-    "cancel": "Cancel",
-    "payment_methods": {
-        "qr": "QR Code",
-        "card": "Credit Card",
-        "cash": "Cash"
-    },
-    "takeaway": "Takeaway",
-    "takeaway_description": "Pack for takeout",
-    "add_to_cart": "Add to cart",
-    "sending": "Sending...",
-    "send_to_kitchen": "Send to kitchen",
-    "order_preview": "Order preview",
-    "preview_order": "Preview order",
-    "restaurants": {
-        "scan2eat_demo": {
-            "name": "Scan2Eat Demo",
-            "type": "Vietnamese cuisine",
-            "slogan": "Taste the soul of Vietnam in every bowl",
-            "description": "Vietnamese food at your fingertips delivered to your door and to your table"
+    "general": {
+        "welcome": "Scan2Eat",
+        "order": "Order",
+        "call_waiter": "Call Waiter",
+        "calling_waiter": "Calling...",
+        "request_payment": "Request Payment",
+        "requesting_payment": "Requesting...",
+        "payment_requested": "Payment Requested",
+        "total": "Total",
+        "add_to_order": "Add to Order",
+        "added": "Added",
+        "add": "Add",
+        "quantity": "Quantity",
+        "comments": "Comments",
+        "takeaway": "Takeaway",
+        "update": "Update",
+        "your_order": "Your Order",
+        "empty_order": "Your order is empty",
+        "send_to_kitchen": "Send to Kitchen",
+        "order_sent": "Order Sent!",
+        "confirm_order": "Confirm Order",
+        "cancel": "Cancel",
+        "close": "Close",
+        "pending": "Pending",
+        "preparing": "Preparing",
+        "ready": "Ready",
+        "served": "Served",
+        "paid": "Paid",
+        "new": "New",
+        "all": "All",
+        "popular": "Popular",
+        "hot": "Hot",
+        "menu": "Menu",
+        "call": "Call",
+        "languageSelection": {
+            "title": "Select Language",
+            "subtitle": "Choose your preferred language to continue"
+        },
+        "welcome": {
+            "title": "Welcome to Pho Saigon",
+            "slogan": "Authentic Vietnamese Cuisine",
+            "description": "Experience the taste of Saigon with our traditional recipes passed down through generations. We use only the freshest ingredients to bring you a truly memorable dining experience."
+        },
+        "benefits": {
+            "easyOrdering": "Easy and convenient ordering",
+            "fastService": "Fast and friendly service",
+            "securePayment": "Secure online payment"
+        },
+        "buttons": {
+            "proceed": "Proceed",
+            "startOrdering": "Start Ordering"
         }
     },
     "categories": {
-        "noodles": {
-            "name": "Noodles",
-            "description": "Traditional Vietnamese noodle dishes"
+        "pho": {
+            "name": "Pho",
+            "description": "Traditional Vietnamese noodle soup"
         },
-        "rice_dishes": {
+        "banh_mi": {
+            "name": "Banh Mi",
+            "description": "Vietnamese sandwich"
+        },
+        "com": {
             "name": "Rice Dishes",
-            "description": "Authentic Vietnamese rice-based meals"
+            "description": "Various rice dishes"
+        },
+        "bun": {
+            "name": "Vermicelli Dishes",
+            "description": "Vermicelli noodle dishes"
         },
         "appetizers": {
             "name": "Appetizers",
-            "description": "Start your meal with these delicious bites"
-        },
-        "drinks": {
-            "name": "Drinks",
-            "description": "Refreshing beverages to complement your meal"
+            "description": "Starters and small bites"
         },
         "desserts": {
             "name": "Desserts",
-            "description": "Sweet treats to end your meal"
+            "description": "Sweet treats"
+        },
+        "drinks": {
+            "name": "Drinks",
+            "description": "Beverages"
         },
         "burgers": {
             "name": "Burgers",
-            "description": "Classic and fusion burger creations"
+            "description": "Classic and special burgers"
         },
         "salads": {
             "name": "Salads",
@@ -121,65 +148,11 @@
             "description": "Grilled chicken, romaine, croutons, and Caesar dressing"
         }
     },
-    "addons": {
-        "extra_egg": {
-            "name": "Extra Egg",
-            "description": "Add an extra egg to your dish"
-        },
-        "no_cilantro": {
-            "name": "No Cilantro",
-            "description": "Remove cilantro from your dish"
-        },
-        "extra_chicken": {
-            "name": "Extra Chicken",
-            "description": "Add extra chicken to your dish"
-        },
-        "extra_noodles": {
-            "name": "Extra Noodles",
-            "description": "Add extra noodles to your dish"
-        },
-        "extra_pork": {
-            "name": "Extra Pork",
-            "description": "Add extra pork to your dish"
-        },
-        "extra_rice": {
-            "name": "Extra Rice",
-            "description": "Add extra rice to your dish"
-        },
-        "extra_cheese": {
-            "name": "Extra Cheese",
-            "description": "Add extra cheese to your dish"
-        },
-        "bacon": {
-            "name": "Bacon",
-            "description": "Add bacon to your dish"
-        },
-        "spicy_sauce": {
-            "name": "Spicy Sauce",
-            "description": "Add spicy sauce to your dish"
-        },
-        "extra_peanut_sauce": {
-            "name": "Extra Peanut Sauce",
-            "description": "Add extra peanut sauce to your dish"
-        }
-    },
     "tags": {
-        "vegetarian": "Vegetarian",
-        "vegan": "Vegan",
-        "gluten-free": "Gluten Free",
-        "halal": "Halal",
-        "kosher": "Kosher",
-        "organic": "Organic",
-        "sustainable": "Sustainable",
-        "local": "Local",
-        "seasonal": "Seasonal",
         "spicy": "Spicy",
-        "sweet": "Sweet",
-        "salty": "Salty",
-        "sour": "Sour",
-        "bitter": "Bitter",
-        "umami": "Umami",
-        "savory": "Savory",
+        "vegetarian": "Vegetarian",
+        "gluten_free": "Gluten-Free",
+        "new": "New",
         "popular": "Popular",
         "hot": "Hot"
     }

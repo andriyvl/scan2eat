@@ -3,7 +3,7 @@ import { useOrderStore } from '../order.store';
 import { getOrderStatusColors } from '@/utils/status-colors';
 import { DishStatus, OrderStatus } from '@/types/types';
 import { useNavigate } from 'react-router-dom';
-import { useTable } from '@/contexts/table.context';
+import { useQrCode } from '@/contexts/qr-code.context';
 
 const STATUS_CONFIG = {
   pending: {
@@ -29,7 +29,7 @@ const STATUS_CONFIG = {
 export const OrderStatusBanner = () => {
   const currentOrder = useOrderStore((s) => s.currentOrder);
   const navigate = useNavigate();
-  const { restaurantId, qrId } = useTable();
+  const { restaurantId, qrId } = useQrCode();
   if (!currentOrder) return null;
   const status = currentOrder.status;
   const config = STATUS_CONFIG[status] || STATUS_CONFIG[OrderStatus.Pending];

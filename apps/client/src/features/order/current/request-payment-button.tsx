@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button"
-import { useTable } from "@/contexts/table.context"
+import { useQrCode } from "@/contexts/qr-code.context"
 import { PaymentMethodModal } from "@/features/call/payment-method-modal"
 import { createCall, getActiveCall } from "@/features/call/services/calls.service"
 import { CreditCard } from "lucide-react"
@@ -8,11 +8,11 @@ import { useTranslation } from "react-i18next"
 
 export const RequestPaymentButton = ({ className }: { className?: string }) => {
     const { t } = useTranslation();
-    const { qrId } = useTable();
+    const { qrId } = useQrCode();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [activeCallId, setActiveCallId] = useState<string | null>(null);
-    const { restaurantId } = useTable();
+    const { restaurantId } = useQrCode();
   
     useEffect(() => {
       const checkActiveCall = async () => {

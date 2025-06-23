@@ -1,78 +1,103 @@
 {
-    "welcome": "Scan2Eat",
-    "order": "Đặt món",
-    "call_waiter": "Gọi nhân viên",
-    "calling_waiter": "Đang gọi...",
-    "waiter_called": "Đã gọi nhân viên",
-    "waiter_call_error": "Không thể gọi nhân viên. Vui lòng thử lại.",
-    "request_bill": "Yêu Cầu Thanh Toán",
-    "requesting_bill": "Đang Yêu Cầu...",
-    "waiting_for_bill": "Đang Chờ Hóa Đơn",
-    "bill_requested": "Đã yêu cầu hóa đơn",
-    "bill_request_error": "Không thể yêu cầu hóa đơn. Vui lòng thử lại.",
-    "add_more_items": "Thêm món",
-    "select_payment_method": "Chọn Phương Thức Thanh Toán",
-    "cancel": "Hủy",
-    "payment_methods": {
-        "qr": "Mã QR",
-        "card": "Thẻ Tín Dụng",
-        "cash": "Tiền Mặt"
-    },
-    "takeaway": "Mang Đi",
-    "takeaway_description": "Đóng gói để mang đi",
-    "add_to_cart": "Thêm Vào Giỏ",
-    "sending": "Đang Gửi...",
-    "send_to_kitchen": "Gửi Vào Bếp",
-    "order_preview": "Xem Đơn Hàng",
-    "preview_order": "Xem đơn hàng",
-    "restaurants": {
-        "scan2eat_demo": {
-            "name": "Scan2Eat Demo",
-            "type": "Ẩm thực Việt Nam",
-            "slogan": "Hương vị Việt Nam trong từng bát",
-            "description": "Ẩm thực Việt Nam ngay tại bàn của bạn"
+    "general": {
+        "welcome": "Scan2Eat",
+        "order": "Đặt món",
+        "call_waiter": "Gọi phục vụ",
+        "calling_waiter": "Đang gọi...",
+        "request_payment": "Yêu cầu thanh toán",
+        "requesting_payment": "Đang yêu cầu...",
+        "payment_requested": "Đã yêu cầu thanh toán",
+        "total": "Tổng cộng",
+        "add_to_order": "Thêm vào đơn",
+        "added": "Đã thêm",
+        "add": "Thêm",
+        "quantity": "Số lượng",
+        "comments": "Ghi chú",
+        "takeaway": "Mang về",
+        "update": "Cập nhật",
+        "your_order": "Đơn hàng của bạn",
+        "empty_order": "Đơn hàng của bạn trống",
+        "send_to_kitchen": "Gửi đến nhà bếp",
+        "order_sent": "Đã gửi đơn hàng!",
+        "confirm_order": "Xác nhận đơn hàng",
+        "cancel": "Hủy",
+        "close": "Đóng",
+        "pending": "Chờ xử lý",
+        "preparing": "Đang chuẩn bị",
+        "ready": "Sẵn sàng",
+        "served": "Đã phục vụ",
+        "paid": "Đã thanh toán",
+        "new": "Mới",
+        "all": "Tất cả",
+        "popular": "Phổ biến",
+        "hot": "Nóng",
+        "menu": "Thực đơn",
+        "call": "Gọi",
+        "languageSelection": {
+            "title": "Chọn ngôn ngữ",
+            "subtitle": "Chọn ngôn ngữ ưa thích của bạn để tiếp tục"
+        },
+        "welcome": {
+            "title": "Chào mừng đến Phở Sài Gòn",
+            "slogan": "Ẩm thực Việt Nam đích thực",
+            "description": "Trải nghiệm hương vị Sài Gòn với công thức truyền thống qua nhiều thế hệ. Chúng tôi chỉ sử dụng những nguyên liệu tươi ngon nhất để mang đến cho bạn một trải nghiệm ẩm thực khó quên."
+        },
+        "benefits": {
+            "easyOrdering": "Đặt hàng dễ dàng và tiện lợi",
+            "fastService": "Phục vụ nhanh chóng và thân thiện",
+            "securePayment": "Thanh toán trực tuyến an toàn"
+        },
+        "buttons": {
+            "proceed": "Tiếp tục",
+            "startOrdering": "Bắt đầu đặt món"
         }
     },
-    
     "categories": {
-        "noodles": {
-            "name": "Món Nước",
-            "description": "Các món phở và bún truyền thống"
+        "pho": {
+            "name": "Phở",
+            "description": "Món phở truyền thống Việt Nam"
         },
-        "rice_dishes": {
+        "banh_mi": {
+            "name": "Bánh Mì",
+            "description": "Bánh mì Việt Nam"
+        },
+        "com": {
             "name": "Cơm",
-            "description": "Các món cơm đặc sắc"
+            "description": "Các món cơm"
+        },
+        "bun": {
+            "name": "Bún",
+            "description": "Các món bún"
         },
         "appetizers": {
-            "name": "Khai Vị",
-            "description": "Các món khai vị hấp dẫn"
-        },
-        "drinks": {
-            "name": "Đồ Uống",
-            "description": "Các loại đồ uống giải khát"
+            "name": "Món khai vị",
+            "description": "Món khai vị và món ăn nhẹ"
         },
         "desserts": {
-            "name": "Tráng Miệng",
-            "description": "Các món tráng miệng ngọt ngào"
+            "name": "Tráng miệng",
+            "description": "Các món tráng miệng ngọt"
+        },
+        "drinks": {
+            "name": "Đồ uống",
+            "description": "Các loại đồ uống"
         },
         "burgers": {
-            "name": "Bánh Mì",
-            "description": "Bánh mì truyền thống và hiện đại"
+            "name": "Bơ-gơ",
+            "description": "Bơ-gơ cổ điển và đặc biệt"
         },
         "salads": {
-            "name": "Salad",
-            "description": "Các món salad tươi ngon"
+            "name": "Gỏi",
+            "description": "Các món gỏi tươi và tốt cho sức khỏe"
         }
     },
-    
     "dishes": {
         "pho_bo": {
             "name": "Phở Bò",
-            "description": "Phở bò truyền thống"
+            "description": "Phở bò Việt Nam"
         },
         "bun_cha": {
             "name": "Bún Chả",
-            "description": "Bún chả Hà Nội"
+            "description": "Thịt nướng với bún"
         },
         "com_suon": {
             "name": "Cơm Sườn",
@@ -84,15 +109,15 @@
         },
         "goi_cuon": {
             "name": "Gỏi Cuốn",
-            "description": "Gỏi cuốn tôm thịt"
+            "description": "Gỏi cuốn tươi"
         },
         "cha_gio": {
             "name": "Chả Giò",
-            "description": "Chả giò chiên giòn"
+            "description": "Chả giò chiên"
         },
         "tra_da": {
             "name": "Trà Đá",
-            "description": "Trà đá"
+            "description": "Trà đá Việt Nam"
         },
         "ca_phe_sua_da": {
             "name": "Cà Phê Sữa Đá",
@@ -100,91 +125,35 @@
         },
         "che_ba_mau": {
             "name": "Chè Ba Màu",
-            "description": "Chè ba màu truyền thống"
+            "description": "Chè ba màu với đậu, thạch và nước cốt dừa"
         },
         "banh_flan": {
             "name": "Bánh Flan",
-            "description": "Bánh flan caramel"
+            "description": "Bánh flan caramen Việt Nam"
         },
         "beef_burger": {
-            "name": "Bánh Mì Bò",
-            "description": "Bánh mì kẹp thịt bò, rau xà lách, cà chua, phô mai"
+            "name": "Bơ-gơ Bò Cổ Điển",
+            "description": "Thịt bò xay với rau diếp, cà chua và phô mai"
         },
         "chicken_burger": {
-            "name": "Bánh Mì Gà",
-            "description": "Bánh mì kẹp gà chiên giòn, sốt mayonnaise, dưa leo"
+            "name": "Bơ-gơ Gà",
+            "description": "Thịt gà giòn với sốt mayonnaise và dưa chua"
         },
         "papaya_salad": {
             "name": "Gỏi Đu Đủ",
-            "description": "Gỏi đu đủ xanh, rau thơm, đậu phộng, nước trộn chua ngọt"
+            "description": "Đu đủ xanh bào sợi với rau thơm, đậu phộng và nước sốt chua ngọt"
         },
         "caesar_salad": {
-            "name": "Salad Gà Caesar",
-            "description": "Salad gà nướng, xà lách Romaine, bánh mì nướng, sốt Caesar"
+            "name": "Gỏi Caesar Gà",
+            "description": "Gà nướng, rau diếp romaine, bánh mì nướng và sốt Caesar"
         }
     },
-    
-    "addons": {
-        "extra_egg": {
-            "name": "Thêm Trứng",
-            "description": "Thêm một quả trứng vào món"
-        },
-        "no_cilantro": {
-            "name": "Không Rau Mùi",
-            "description": "Bỏ rau mùi khỏi món"
-        },
-        "extra_chicken": {
-            "name": "Thêm Gà",
-            "description": "Thêm gà vào món"
-        },
-        "extra_noodles": {
-            "name": "Thêm Bún",
-            "description": "Thêm bún vào món"
-        },
-        "extra_pork": {
-            "name": "Thêm Thịt Heo",
-            "description": "Thêm thịt heo vào món"
-        },
-        "extra_rice": {
-            "name": "Thêm Cơm",
-            "description": "Thêm cơm vào món"
-        },
-        "extra_cheese": {
-            "name": "Thêm Phô Mai",
-            "description": "Thêm phô mai vào món"
-        },
-        "bacon": {
-            "name": "Thêm Thịt Xông Khói",
-            "description": "Thêm thịt xông khói vào món"
-        },
-        "spicy_sauce": {
-            "name": "Thêm Sốt Cay",
-            "description": "Thêm sốt cay vào món"
-        },
-        "extra_peanut_sauce": {
-            "name": "Thêm Sốt Đậu Phộng",
-            "description": "Thêm sốt đậu phộng vào món"
-        }
-    },
-    
     "tags": {
-        "vegetarian": "Chay",
-        "vegan": "Thuần Chay",
-        "gluten-free": "Không Gluten",
-        "halal": "Halal",
-        "kosher": "Kosher",
-        "organic": "Hữu Cơ",
-        "sustainable": "Bền Vững",
-        "local": "Địa Phương",
-        "seasonal": "Theo Mùa",
         "spicy": "Cay",
-        "sweet": "Ngọt",
-        "salty": "Mặn",
-        "sour": "Chua",
-        "bitter": "Đắng",
-        "umami": "Umami",
-        "savory": "Đậm Đà",
-        "popular": "Phổ Biến",
+        "vegetarian": "Chay",
+        "gluten_free": "Không gluten",
+        "new": "Mới",
+        "popular": "Phổ biến",
         "hot": "Nóng"
     }
 }

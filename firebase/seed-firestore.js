@@ -4,6 +4,7 @@ const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./service-account.json');
 const { restaurants, categories, dishes, addons, tags, tables } = require('./seed-menu.const');
 const { enTranslations, viTranslations } = require('./seed-translations.const');
+const { languageLocales } = require('./seed-languages.const');
 
 initializeApp({
   credential: cert(serviceAccount)
@@ -22,13 +23,26 @@ async function clearCollection(collectionName) {
   console.log(`🧹 Cleared ${collectionName}`);
 }
 
+async function seedLanguages() {
+  const languagesCollection = db.collection('languages');
+  console.log('Seeding languages...');
+  const batch = db.batch();
+  for (const locale of languageLocales) {
+    const docRef = languagesCollection.doc(locale.id);
+    batch.set(docRef, locale);
+    console.log(`  Seeded language: ${locale.name} (${locale.id})`);
+  }
+  await batch.commit();
+  console.log('✅ Languages seeding complete.');
+}
+
 async function seedTranslations() {
   const batch = db.batch();
   // Seed English translations
-  const enDocRef = db.collection('translations').doc('en');
+  const enDocRef = db.collection('translations').doc('en-US');
   batch.set(enDocRef, enTranslations);
   // Seed Vietnamese translations
-  const viDocRef = db.collection('translations').doc('vi');
+  const viDocRef = db.collection('translations').doc('vi-VN');
   batch.set(viDocRef, viTranslations);
   await batch.commit();
   console.log('✅ Seeded translations');
@@ -48,6 +62,7 @@ async function seed() {
       await clearCollection('tags');
       await clearCollection('addons');
       await clearCollection('restaurants');
+      await clearCollection('languages');
     }
   }
 
@@ -56,6 +71,8 @@ async function seed() {
     console.log('🔥 Translations seeded successfully');
     return;
   }
+
+  await seedLanguages();
 
   // Pre-generate all IDs
   const restaurantIds = {};

@@ -6,7 +6,7 @@ import OrderDishesButton from '@/features/order/preview/preview-order-button';
 import { OrderPreviewDrawer } from '@/features/order/preview/order-preview-drawer';
 import { CategoryTabs } from './category-tabs';
 import { OrderStatusBanner } from '../../order/current/order-status-banner';
-import { useTable } from '@/contexts/table.context';
+import { useQrCode } from '@/contexts/qr-code.context';
 
 export const MenuList = () => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
@@ -14,7 +14,7 @@ export const MenuList = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [orderDrawerOpen, setOrderDrawerOpen] = useState(false);
   const [dishPreviewOpen, setDishPreviewOpen] = useState(false);
-  const { restaurantId } = useTable();
+  const { restaurantId } = useQrCode();
 
   useEffect(() => {
     const fetchMenu = async () => {

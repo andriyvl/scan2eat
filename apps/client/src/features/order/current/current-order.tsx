@@ -1,9 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import { useTable } from '@/contexts/table.context';
+import { useQrCode } from '@/contexts/qr-code.context';
 import { useOrderStore } from '../order.store';
-import { PaymentCall } from '@/features/call/payment-call';
 import { useTranslation } from 'react-i18next';
-import { getOrderStatusColors, getDishStatusColorVar } from '@/utils/status-colors';
 import { OrderStatus } from '@/types/types';
 import { formatDate } from '../../../utils/format-date';
 import { StatusBadge } from './status-badge';
@@ -16,7 +14,7 @@ import { CalendarIcon, ClockIcon, PlusIcon } from 'lucide-react';
 export const CurrentOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { qrId, restaurantId } = useTable();
+  const { qrId, restaurantId } = useQrCode();
   const order = useOrderStore((s) => s.currentOrder);
 
   // Simulate loading state if order is null

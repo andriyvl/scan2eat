@@ -1,6 +1,6 @@
 import { CurrentOrder } from '@/features/order/current/current-order';
 
-export const OrderStatusPage = () => {
+export const OrderPage = () => {
   return (
       <CurrentOrder />
   );

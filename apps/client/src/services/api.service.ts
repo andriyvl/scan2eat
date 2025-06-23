@@ -4,9 +4,11 @@ import {
   query,
   where,
   getDocs,
-  addDoc
+  addDoc,
+  getDoc,
+  doc
 } from 'firebase/firestore';
-import type { Dish, MenuCategory, OrderDish } from '@/types/types';
+import type { Dish, MenuCategory, OrderDish, Restaurant } from '@/types/types';
 
 export const getMenuCategories = async (restaurantId: string) => {
   const snap = await getDocs(
@@ -21,6 +23,11 @@ export const getDishes = async (restaurantId: string) => {
   );
   return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Dish[];
 };  
+
+export const getRestaurant = async (restaurantId: string) => {
+  const snap = await getDoc(doc(db, 'restaurants', restaurantId));
+  return snap.data() as Restaurant;
+};
 
 export const submitOrder = async (
   qrId: string,
