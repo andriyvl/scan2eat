@@ -2,7 +2,7 @@ require('dotenv').config();
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./service-account.json');
-const { categories, dishes } = require('./seed-menu.const');
+const { restaurants, categories, dishes, addons, tags, tables } = require('./seed-menu.const');
 const { enTranslations, viTranslations } = require('./seed-translations.const');
 
 initializeApp({
@@ -45,6 +45,9 @@ async function seed() {
       await clearCollection('orders');
       await clearCollection('calls');
       await clearCollection('tables');
+      await clearCollection('tags');
+      await clearCollection('addons');
+      await clearCollection('restaurants');
     }
   }
 
@@ -54,48 +57,159 @@ async function seed() {
     return;
   }
 
-  const restaurantId = 'restScan2EatDemo';
+  // Pre-generate all IDs
+  const restaurantIds = {};
+  const categoryIds = {};
+  const addonIds = {};
+  const tagIds = {};
+  const dishIds = {};
 
-  // 🔸 Restaurants (custom ID)
-  await db.collection('restaurants').doc(restaurantId).set({
-    name: 'Scan2Eat',
-    defaultLang: 'en',
-    ownerEmail: 'admin@scan2eat.app',
-    createdAt: FieldValue.serverTimestamp()
-  });
+  // Generate restaurant IDs
+  for (const restaurant of restaurants) {
+    restaurantIds[restaurant.key] = db.collection('restaurants').doc().id;
+  }
 
-  // 🔸 Tables (auto ID)
-  const tableRef = await db.collection('tables').add({
-    tableNumber: 'A5',
-    restaurantId,
-    qrId: 'A5'
-  });
-
-  // 🔸 Categories
-  const categoryRefs = {};
+  // Generate category IDs
   for (const category of categories) {
-    const ref = await db.collection('categories').add({
-      categoryName: category.name,
-      restaurantId,
+    categoryIds[category.key] = db.collection('categories').doc().id;
+  }
+
+  // Generate addon IDs
+  for (const addon of addons) {
+    addonIds[addon.key] = db.collection('addons').doc().id;
+  }
+
+  // Generate tag IDs
+  for (const tag of tags) {
+    tagIds[tag.key] = db.collection('tags').doc().id;
+  }
+
+  // Generate dish IDs
+  for (const dish of dishes) {
+    dishIds[dish.key] = db.collection('dishes').doc().id;
+  }
+
+  // Now create documents with pre-generated IDs
+  const batch = db.batch();
+
+  // 🔸 Create Restaurants
+  for (const restaurant of restaurants) {
+    const docRef = db.collection('restaurants').doc(restaurantIds[restaurant.key]);
+    batch.set(docRef, {
+      key: restaurant.key,
+      name: restaurant.name,
+      defaultLang: restaurant.defaultLang,
+      ownerEmail: restaurant.ownerEmail,
+      createdAt: FieldValue.serverTimestamp()
+    });
+  }
+
+  // 🔸 Create Categories
+  for (const category of categories) {
+    const docRef = db.collection('categories').doc(categoryIds[category.key]);
+    batch.set(docRef, {
+      key: category.key,
+      name: category.name,
+      restaurantId: restaurantIds['scan2eat_demo'], // Use the pre-generated restaurant ID
       sortOrder: category.sortOrder
     });
-    categoryRefs[category.name] = ref;
   }
 
-  // 🔸 Dishes
-  const dishRefs = [];
-  for (const dish of dishes) {
-    const ref = await db.collection('dishes').add({
-      ...dish,
-      categoryId: categoryRefs[dish.categoryName].id,
-      restaurantId
+  // 🔸 Create Tags
+  for (const tag of tags) {
+    const docRef = db.collection('tags').doc(tagIds[tag.key]);
+    batch.set(docRef, {
+      key: tag.key
     });
-    dishRefs.push(ref);
   }
 
-  // 🔸 Orders (example)
+  // 🔸 Create Addons
+  for (const addon of addons) {
+    const docRef = db.collection('addons').doc(addonIds[addon.key]);
+    batch.set(docRef, {
+      key: addon.key,
+      price: addon.price,
+      restaurantId: restaurantIds['scan2eat_demo']
+    });
+  }
+
+  // 🔸 Create Dishes with proper category mapping
+  const categoryKeyToDishKey = {
+    'noodles': ['pho_bo', 'bun_cha'],
+    'rice_dishes': ['com_suon', 'com_ga'],
+    'appetizers': ['goi_cuon', 'cha_gio'],
+    'drinks': ['tra_da', 'ca_phe_sua_da'],
+    'desserts': ['che_ba_mau', 'banh_flan'],
+    'burgers': ['beef_burger', 'chicken_burger'],
+    'salads': ['papaya_salad', 'caesar_salad']
+  };
+
+  for (const dish of dishes) {
+    // Find which category this dish belongs to
+    let categoryKey = null;
+    for (const [catKey, dishKeys] of Object.entries(categoryKeyToDishKey)) {
+      if (dishKeys.includes(dish.key)) {
+        categoryKey = catKey;
+        break;
+      }
+    }
+
+    if (!categoryKey) {
+      console.warn(`⚠️ No category found for dish: ${dish.key}`);
+      continue;
+    }
+
+    // Create dish key to addon keys mapping
+    const dishKeyToAddonKeys = {
+      'pho_bo': ['extra_egg', 'extra_noodles'],
+      'bun_cha': ['extra_egg', 'extra_pork'],
+      'com_suon': ['extra_egg'],
+      'com_ga': ['extra_chicken'],
+      'beef_burger': ['extra_chicken'],
+      'chicken_burger': ['extra_chicken'],
+      'papaya_salad': ['no_cilantro'],
+      'caesar_salad': ['no_cilantro'],
+      'goi_cuon': ['no_cilantro'],
+      'cha_gio': ['no_cilantro'],
+      'tra_da': [],
+      'ca_phe_sua_da': [],
+      'che_ba_mau': [],
+      'banh_flan': []
+    };
+
+    // Map addon keys to IDs for this dish
+    const addonOptionIds = (dishKeyToAddonKeys[dish.key] || [])
+      .map(addonKey => addonIds[addonKey])
+      .filter(Boolean);
+    
+    const docRef = db.collection('dishes').doc(dishIds[dish.key]);
+    batch.set(docRef, {
+      key: dish.key,
+      basePrice: dish.basePrice,
+      imageUrl: dish.imageUrl,
+      categoryId: categoryIds[categoryKey], // Use pre-generated category ID
+      restaurantId: restaurantIds['scan2eat_demo'],
+      tags: dish.tags, // Keep as array of strings
+      addonOptions: addonOptionIds
+    });
+  }
+
+  // 🔸 Create Tables
+  for (const table of tables) {
+    const docRef = db.collection('tables').doc();
+    batch.set(docRef, {
+      tableNumber: table.tableNumber,
+      restaurantId: restaurantIds[table.restaurantId],
+      qrId: table.qrId
+    });
+  }
+
+  // Commit all documents
+  await batch.commit();
+
+  // 🔸 Create example Order (separate transaction since we need dish ID)
   await db.collection('orders').add({
-    tableId: tableRef.id,
+    qrId: tables[0].qrId,
     language: 'en',
     isTakeaway: false,
     orderComment: 'Allergic to peanuts',
@@ -105,11 +219,10 @@ async function seed() {
     updatedAt: FieldValue.serverTimestamp(),
     dishes: [
       {
-        dishId: dishRefs[0].id,
-        name: dishes[0].name,
-        basePrice: dishes[0].basePrice,
+        dishId: dishIds['pho_bo'],
+        basePrice: 55000,
         price: 65000,
-        addons: [{ name: 'Extra Egg', price: 10000 }],
+        addons: [{ addonId: addonIds['extra_egg'], price: 10000 }],
         comment: '',
         takeaway: false,
         status: 'pending'
@@ -117,17 +230,19 @@ async function seed() {
     ]
   });
 
-  // 🔸 Calls (example)
+  // 🔸 Create example Call
   await db.collection('calls').add({
-    tableId: tableRef.id,
+    qrId: tables[0].qrId,
     timestamp: FieldValue.serverTimestamp(),
     type: 'waiter_call',
-    status: 'active'
+    status: 'active',
+    restaurantId: restaurantIds['scan2eat_demo']
   });
 
   await seedTranslations();
 
-  console.log('🔥 Firestore seeded successfully (with auto IDs + categories)');
+  console.log('🔥 Firestore seeded successfully with pre-generated IDs');
+  console.log(`📊 Created: ${restaurants.length} restaurants, ${categories.length} categories, ${dishes.length} dishes, ${addons.length} addons, ${tags.length} tags`);
 }
 
-seed();
+seed().catch(console.error);

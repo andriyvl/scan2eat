@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
-import { CallsService } from './services/calls.service';
+import { createCall } from './services/calls.service';
 import { SelectButton } from '@/components/ui/select-button';
 import { BanknoteIcon, CreditCardIcon, QrCodeIcon, SmartphoneIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -14,18 +14,18 @@ interface PaymentMethodModalProps {
 
 export const PaymentMethodModal = ({ isOpen, onClose, onSuccess }: PaymentMethodModalProps) => {
   const { t } = useTranslation();
-  const { tableId } = useTable();
+  const { qrId, restaurantId } = useTable();
   const [selectedMethod, setSelectedMethod] = useState<'qr' | 'card' | 'cash' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = async () => {
-    if (!selectedMethod || !tableId) return;
+    if (!selectedMethod || !qrId || !restaurantId) return;
 
     try {
       setIsSubmitting(true);
-      await CallsService.getInstance().createCall(tableId, 'payment_call', { paymentMethod: selectedMethod });
+      await createCall(qrId, 'payment_call', restaurantId, { paymentMethod: selectedMethod });
       onSuccess();
     } catch (error) {
       console.error('Error requesting bill:', error);

@@ -1,6 +1,8 @@
 import { useOrderStore } from '@/features/order/order.store';
+import { useTranslation } from 'react-i18next';
 
 const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
+  const { t } = useTranslation();
   const { dishes } = useOrderStore();
   const total = dishes.reduce((sum, d) => sum + d.price, 0);
   if (!dishes.length) return null;
@@ -14,7 +16,7 @@ const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
     >
       <div className="flex items-center gap-3">
             <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 font-bold text-base mr-2">{dishes.length}</span>
-            <span>Preview order</span>
+            <span>{t('preview_order')}</span>
       </div>
           <span className="font-bold text-xl">₫{total.toLocaleString()}</span>
         </button>

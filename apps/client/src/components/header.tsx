@@ -14,7 +14,7 @@ const LANGUAGES = [
 
 export const Header = () => {
   const { t, i18n } = useTranslation();
-  const { restaurantName, tableId } = useTable();
+  const { restaurantName, qrId } = useTable();
   const [langDropdown, setLangDropdown] = useState(false);
   const currentLang = LANGUAGES.find(l => l.code === i18n.language) || LANGUAGES[0];
   const location = useLocation();
@@ -29,8 +29,8 @@ export const Header = () => {
             <button
               className="mr-2 p-2 rounded-full hover:bg-gray-100 transition-colors"
               onClick={() => {
-                if (restaurantName && tableId) {
-                  navigate(`/${restaurantName}/${tableId}`);
+                if (restaurantName && qrId) {
+                  navigate(`/${restaurantName}/${qrId}`);
                 } else {
                   navigate(-1);
                 }
@@ -45,7 +45,7 @@ export const Header = () => {
           </div>}
           <div>
             <h1 className="font-bold text-lg text-gray-900">{restaurantName || t('welcome')}</h1>
-            <p className="text-xs text-gray-500">Table {tableId}</p>
+            <p className="text-xs text-gray-500">Qr Id {qrId}</p>
           </div>
         </div>
         <div className="flex items-center space-x-3 relative">

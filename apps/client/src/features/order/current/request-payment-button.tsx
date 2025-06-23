@@ -1,33 +1,33 @@
 import { Button } from "@/components/ui/button"
 import { useTable } from "@/contexts/table.context"
 import { PaymentMethodModal } from "@/features/call/payment-method-modal"
-import { CallsService } from "@/features/call/services/calls.service"
+import { createCall, getActiveCall } from "@/features/call/services/calls.service"
 import { CreditCard } from "lucide-react"
 import { useEffect, useState } from "react"
 import { useTranslation } from "react-i18next"
 
 export const RequestPaymentButton = ({ className }: { className?: string }) => {
     const { t } = useTranslation();
-    const { tableId } = useTable();
+    const { qrId } = useTable();
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isWaiting, setIsWaiting] = useState(false);
     const [activeCallId, setActiveCallId] = useState<string | null>(null);
+    const { restaurantId } = useTable();
   
     useEffect(() => {
       const checkActiveCall = async () => {
-        if (!tableId) return;
+        if (!qrId || !restaurantId) return;
         
-        const callsService = CallsService.getInstance();
-        const activeCall = await callsService.getActiveCall(tableId, 'payment_call');
-        
+        const activeCall = await getActiveCall(qrId, 'payment_call', restaurantId);
+
         if (activeCall) {
           setIsWaiting(true);
-          setActiveCallId(activeCall.id);
+          setActiveCallId(activeCall?.id || null);
         }
       };
   
       checkActiveCall();
-    }, [tableId]);
+    }, [qrId, restaurantId]);
   
     const handleRequestBill = () => {
       setIsModalOpen(true);
@@ -38,10 +38,9 @@ export const RequestPaymentButton = ({ className }: { className?: string }) => {
     };
   
     const handlePaymentSuccess = async () => {
-      if (!tableId) return;
+      if (!qrId || !restaurantId) return;
   
-      const callsService = CallsService.getInstance();
-      const callId = await callsService.createCall(tableId, 'payment_call');
+      const callId = await createCall(qrId, 'payment_call', restaurantId);
       
       setIsModalOpen(false);
       setIsWaiting(true);

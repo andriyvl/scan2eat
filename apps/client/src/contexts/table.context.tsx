@@ -1,80 +1,71 @@
 // src/contexts/table-context.tsx
 
-import { createContext, useContext, useState, type ReactNode, useEffect } from 'react';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/config/firebase.config';
-import { useOrderStore } from '@/features/order/order.store';
-import type { Order } from '@/types/types';
+import { createContext, useContext, useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useOrderStore } from '../features/order/order.store';
 
-type TableContextValue = {
+interface TableContextType {
   restaurantId: string;
-  tableId: string;
+  qrId: string;
   restaurantName?: string;
-  setContext: (restaurantId: string, tableId: string, restaurantName?: string) => void;
-};
+  setContext: (restaurantId: string, qrId: string, restaurantName?: string) => void;
+}
 
-const TableContext = createContext<TableContextValue | undefined>(undefined);
+const TableContext = createContext<TableContextType>({
+  restaurantId: '',
+  qrId: '',
+  setContext: () => {},
+});
 
-export const TableProvider = ({ children }: { children: ReactNode }) => {
+export const useTable = () => useContext(TableContext);
+
+export const TableProvider = ({ children }: { children: React.ReactNode }) => {
   const [restaurantId, setRestaurantId] = useState('');
-  const [tableId, setTableId] = useState('');
-  const [restaurantName, setRestaurantName] = useState('');
-  const setCurrentOrder = useOrderStore((s) => s.setCurrentOrder);
+  const [qrId, setQrId] = useState('');
+  const [restaurantName, setRestaurantName] = useState<string>();
+  const navigate = useNavigate();
+  const { setCurrentOrder, clearCurrentOrder } = useOrderStore();
 
-  const setContext = (restaurant: string, table: string, name?: string) => {
+  const setContext = (restaurant: string, qr: string, name?: string) => {
     setRestaurantId(restaurant);
-    setTableId(table);
-    if (name) setRestaurantName(name);
+    setQrId(qr);
+    if (name) {
+      setRestaurantName(name);
+    }
   };
 
   useEffect(() => {
-    const fetchOrder = async () => {
-      const orderId = localStorage.getItem('currentOrderId');
-      if (orderId) {
-        const orderRef = doc(db, 'orders', orderId);
-        const orderSnap = await getDoc(orderRef);
-        if (orderSnap.exists()) {
-          const data = orderSnap.data();
-          if (
-            data &&
-            data.tableId &&
-            data.language &&
-            typeof data.isTakeaway === 'boolean' &&
-            typeof data.orderComment === 'string' &&
-            data.status &&
-            Array.isArray(data.dishes) &&
-            typeof data.price === 'number' &&
-            data.createdAt &&
-            data.updatedAt
-          ) {
-            setCurrentOrder({
-              id: orderId,
-              tableId: data.tableId,
-              language: data.language,
-              isTakeaway: data.isTakeaway,
-              orderComment: data.orderComment,
-              status: data.status,
-              dishes: data.dishes,
-              price: data.price,
-              createdAt: data.createdAt,
-              updatedAt: data.updatedAt,
-            } as Order);
-          }
-        }
-      }
-    };
-    fetchOrder();
-  }, [tableId, setCurrentOrder]);
+    const data = localStorage.getItem('tableContext');
+    if (data) {
+      const parsed = JSON.parse(data);
+      setRestaurantId(parsed.restaurantId);
+      setQrId(parsed.qrId);
+      setRestaurantName(parsed.restaurantName);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (restaurantId && qrId) {
+      localStorage.setItem(
+        'tableContext',
+        JSON.stringify({
+          restaurantId,
+          qrId,
+          restaurantName,
+        })
+      );
+    }
+  }, [restaurantId, qrId, restaurantName]);
+
+  useEffect(() => {
+    if (!qrId) {
+      clearCurrentOrder();
+    }
+  }, [qrId, clearCurrentOrder]);
 
   return (
-    <TableContext.Provider value={{ restaurantId, tableId, restaurantName, setContext }}>
-      {children}
+    <TableContext.Provider value={{ restaurantId, qrId, restaurantName, setContext }}>
+      {qrId && restaurantId &&children}
     </TableContext.Provider>
   );
-};
-
-export const useTable = () => {
-  const context = useContext(TableContext);
-  if (!context) throw new Error('useTable must be used within TableProvider');
-  return context;
 };

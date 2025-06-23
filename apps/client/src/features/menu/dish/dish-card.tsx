@@ -1,18 +1,20 @@
 import { useState } from 'react';
 import { DishStatus, type Dish } from '@/types/types';
-import { useLanguage } from '@/contexts/language.context';
 import { Plus } from 'lucide-react';
 import { DishViewDrawer } from './dish-view-drawer';
 import { useOrderStore } from '@/features/order/order.store';
+import { useTranslation } from 'react-i18next';
+import { DishTag } from './dish-tag';
+import { IconButton } from '@/components/ui/icon-button';
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
 export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: (open: boolean) => void }) => {
-  const { language } = useLanguage();
   const [open, setOpen] = useState(false);
   const setDish = useOrderStore((s) => s.setDish);
-  const dishName = dish.translations?.[language]?.name ?? dish.name;
-  const dishDescription = dish.translations?.[language]?.description ?? dish.description;
+  const { t } = useTranslation();
+  const dishName = t(`dishes.${dish.key}.name`);
+  const dishDescription = t(`dishes.${dish.key}.description`);
 
   const handleOpen = (value: boolean) => {
     if (value) {
@@ -25,10 +27,10 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
     if (onPreviewOpen) onPreviewOpen(value);
   };
 
-  function addToOrder(dish: Dish): void {
+  function addToCart(dish: Dish): void {
     setDish({
       dishId: dish.id,
-      name: dish.name,
+      key: dish.key,
       basePrice: dish.basePrice,
       price: dish.basePrice,
       addons: [],
@@ -53,20 +55,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
             <p className="text-sm text-gray-600 mb-3">{dishDescription}</p>
             <div className="flex items-center space-x-2">
               {dish.tags?.map((tag) => (
-                <span
-                  key={tag}
-                  className={`px-2 py-1 text-xs rounded-full ${
-                    tag === 'Popular' ? 'bg-green-100 text-green-700' :
-                    tag === 'Spicy' ? 'bg-blue-100 text-blue-700' :
-                    tag === 'Fresh' ? 'bg-green-100 text-green-700' :
-                    tag === 'Quick' ? 'bg-orange-100 text-orange-700' :
-                    tag === 'Sweet' ? 'bg-purple-100 text-purple-700' :
-                    tag === 'Cold' ? 'bg-blue-100 text-blue-700' :
-                    'bg-gray-100 text-gray-600'
-                  }`}
-                >
-                  {tag}
-                </span>
+                <DishTag key={tag} tag={tag} />
               ))}
             </div>
           </div>
@@ -76,9 +65,17 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
               alt={dishName}
               className="w-full h-full object-cover rounded-lg"
             />
-            <div onClick={() => addToOrder(dish)} className="add-to-order-button absolute -bottom-1 -right-1 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center">
+            <IconButton
+              size="sm"
+              variant="default"
+              onClick={(e) => {
+                e.stopPropagation();
+                addToCart(dish);
+              }}
+              className="add-to-order-button absolute -bottom-1 -right-1"
+            >
               <Plus size={16} />
-            </div>
+            </IconButton>
           </div>
         </div>
       </div>

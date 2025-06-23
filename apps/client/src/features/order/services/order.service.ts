@@ -1,9 +1,10 @@
 import type { Order, OrderDish } from '@/types/types';
 import { db } from '@/config/firebase.config';
-import { doc, updateDoc, arrayUnion, getDoc, addDoc, collection } from 'firebase/firestore';
+import { doc, updateDoc, arrayUnion, getDoc, addDoc, collection, getDocs, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
 import { devtools } from 'zustand/middleware';
 import { create } from 'zustand';
 import { useOrderStore } from '../order.store';
+import { OrderStatus } from '@/types/types';
 
 export const calculateOrderTotal = (dishes: OrderDish[]): number => {
   return dishes.reduce((total, dish) => {
@@ -13,21 +14,21 @@ export const calculateOrderTotal = (dishes: OrderDish[]): number => {
 };
 
 export const submitNewOrder = async (
-  tableId: string,
+  qrId: string,
   language: string,
   dishes: OrderDish[],
   total: number
 ): Promise<string> => {
   const order = {
-    tableId,
+    qrId,
     language,
     isTakeaway: dishes.every((d) => d.takeaway),
     orderComment: '',
     dishes,
-    status: 'pending',
+    status: OrderStatus.Pending,
     price: total,
-    createdAt: new Date(),
-    updatedAt: new Date()
+    createdAt: Timestamp.now(),
+    updatedAt: Timestamp.now()
   };
 
   const docRef = await addDoc(collection(db, 'orders'), order);
@@ -57,7 +58,7 @@ export const updateExistingOrder = async (
   await updateDoc(orderRef, {
     dishes: arrayUnion(...newDishes),
     price: newTotal,
-    updatedAt: new Date()
+    updatedAt: Timestamp.now()
   });
   // Fetch the updated order and update the store
   const updatedSnap = await getDoc(orderRef);

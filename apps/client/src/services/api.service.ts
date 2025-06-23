@@ -20,16 +20,16 @@ export const getDishes = async (restaurantId: string) => {
     query(collection(db, 'dishes'), where('restaurantId', '==', restaurantId))
   );
   return snap.docs.map((doc) => ({ id: doc.id, ...doc.data() })) as Dish[];
-};
+};  
 
 export const submitOrder = async (
-  tableId: string,
+  qrId: string,
   language: string,
   dishes: OrderDish[],
   total: number
 ): Promise<string> => {
   const order = {
-    tableId,
+    qrId,
     language,
     isTakeaway: dishes.every((d) => d.takeaway),
     orderComment: '',

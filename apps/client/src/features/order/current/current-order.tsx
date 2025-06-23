@@ -16,7 +16,7 @@ import { CalendarIcon, ClockIcon, PlusIcon } from 'lucide-react';
 export const CurrentOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { tableId, restaurantId } = useTable();
+  const { qrId, restaurantId } = useTable();
   const order = useOrderStore((s) => s.currentOrder);
 
   // Simulate loading state if order is null
@@ -65,7 +65,7 @@ export const CurrentOrder = () => {
 
       {canAddMoreItems && (
           <Button
-            onClick={() => navigate(`/${restaurantId}/${tableId}`)}
+            onClick={() => navigate(`/${restaurantId}/${qrId}`)}
             variant="outline"
             size="lg"
           >

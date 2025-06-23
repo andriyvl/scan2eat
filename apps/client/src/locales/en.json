@@ -11,7 +11,7 @@
     "bill_requested": "Bill requested",
     "bill_request_error": "Failed to request bill. Please try again.",
     "add_more_items": "Add more items",
-    "select_payment_method": "Select Payment Method",
+    "select_payment_method": "Select payment method",
     "cancel": "Cancel",
     "payment_methods": {
         "qr": "QR Code",
@@ -20,6 +20,167 @@
     },
     "takeaway": "Takeaway",
     "takeaway_description": "Pack for takeout",
-    "add_to_cart": "Add to Cart"
+    "add_to_cart": "Add to cart",
+    "sending": "Sending...",
+    "send_to_kitchen": "Send to kitchen",
+    "order_preview": "Order preview",
+    "preview_order": "Preview order",
+    "restaurants": {
+        "scan2eat_demo": {
+            "name": "Scan2Eat Demo",
+            "type": "Vietnamese cuisine",
+            "slogan": "Taste the soul of Vietnam in every bowl",
+            "description": "Vietnamese food at your fingertips delivered to your door and to your table"
+        }
+    },
+    "categories": {
+        "noodles": {
+            "name": "Noodles",
+            "description": "Traditional Vietnamese noodle dishes"
+        },
+        "rice_dishes": {
+            "name": "Rice Dishes",
+            "description": "Authentic Vietnamese rice-based meals"
+        },
+        "appetizers": {
+            "name": "Appetizers",
+            "description": "Start your meal with these delicious bites"
+        },
+        "drinks": {
+            "name": "Drinks",
+            "description": "Refreshing beverages to complement your meal"
+        },
+        "desserts": {
+            "name": "Desserts",
+            "description": "Sweet treats to end your meal"
+        },
+        "burgers": {
+            "name": "Burgers",
+            "description": "Classic and fusion burger creations"
+        },
+        "salads": {
+            "name": "Salads",
+            "description": "Fresh and healthy salad options"
+        }
+    },
+    "dishes": {
+        "pho_bo": {
+            "name": "Beef Pho",
+            "description": "Vietnamese beef noodle soup"
+        },
+        "bun_cha": {
+            "name": "Bun Cha",
+            "description": "Grilled pork with rice vermicelli"
+        },
+        "com_suon": {
+            "name": "Com Suon",
+            "description": "Grilled pork chop with rice"
+        },
+        "com_ga": {
+            "name": "Hainanese Chicken Rice",
+            "description": "Hainanese chicken rice"
+        },
+        "goi_cuon": {
+            "name": "Goi Cuon",
+            "description": "Fresh spring rolls"
+        },
+        "cha_gio": {
+            "name": "Fried Spring Rolls",
+            "description": "Fried spring rolls"
+        },
+        "tra_da": {
+            "name": "Iced Tea",
+            "description": "Vietnamese iced tea"
+        },
+        "ca_phe_sua_da": {
+            "name": "Iced Milk Coffee",
+            "description": "Vietnamese iced coffee with milk"
+        },
+        "che_ba_mau": {
+            "name": "Three Color Dessert",
+            "description": "Three-color dessert with beans, jelly, and coconut milk"
+        },
+        "banh_flan": {
+            "name": "Caramel Flan",
+            "description": "Vietnamese caramel flan"
+        },
+        "beef_burger": {
+            "name": "Classic Beef Burger",
+            "description": "Juicy beef patty with lettuce, tomato, and cheese"
+        },
+        "chicken_burger": {
+            "name": "Chicken Burger",
+            "description": "Crispy chicken fillet with mayo and pickles"
+        },
+        "papaya_salad": {
+            "name": "Green Papaya Salad",
+            "description": "Shredded green papaya with herbs, peanuts, and tangy dressing"
+        },
+        "caesar_salad": {
+            "name": "Chicken Caesar Salad",
+            "description": "Grilled chicken, romaine, croutons, and Caesar dressing"
+        }
+    },
+    "addons": {
+        "extra_egg": {
+            "name": "Extra Egg",
+            "description": "Add an extra egg to your dish"
+        },
+        "no_cilantro": {
+            "name": "No Cilantro",
+            "description": "Remove cilantro from your dish"
+        },
+        "extra_chicken": {
+            "name": "Extra Chicken",
+            "description": "Add extra chicken to your dish"
+        },
+        "extra_noodles": {
+            "name": "Extra Noodles",
+            "description": "Add extra noodles to your dish"
+        },
+        "extra_pork": {
+            "name": "Extra Pork",
+            "description": "Add extra pork to your dish"
+        },
+        "extra_rice": {
+            "name": "Extra Rice",
+            "description": "Add extra rice to your dish"
+        },
+        "extra_cheese": {
+            "name": "Extra Cheese",
+            "description": "Add extra cheese to your dish"
+        },
+        "bacon": {
+            "name": "Bacon",
+            "description": "Add bacon to your dish"
+        },
+        "spicy_sauce": {
+            "name": "Spicy Sauce",
+            "description": "Add spicy sauce to your dish"
+        },
+        "extra_peanut_sauce": {
+            "name": "Extra Peanut Sauce",
+            "description": "Add extra peanut sauce to your dish"
+        }
+    },
+    "tags": {
+        "vegetarian": "Vegetarian",
+        "vegan": "Vegan",
+        "gluten-free": "Gluten Free",
+        "halal": "Halal",
+        "kosher": "Kosher",
+        "organic": "Organic",
+        "sustainable": "Sustainable",
+        "local": "Local",
+        "seasonal": "Seasonal",
+        "spicy": "Spicy",
+        "sweet": "Sweet",
+        "salty": "Salty",
+        "sour": "Sour",
+        "bitter": "Bitter",
+        "umami": "Umami",
+        "savory": "Savory",
+        "popular": "Popular",
+        "hot": "Hot"
+    }
 }
-  

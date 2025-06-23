@@ -29,7 +29,7 @@ const STATUS_CONFIG = {
 export const OrderStatusBanner = () => {
   const currentOrder = useOrderStore((s) => s.currentOrder);
   const navigate = useNavigate();
-  const { restaurantId, tableId } = useTable();
+  const { restaurantId, qrId } = useTable();
   if (!currentOrder) return null;
   const status = currentOrder.status;
   const config = STATUS_CONFIG[status] || STATUS_CONFIG[OrderStatus.Pending];
@@ -38,8 +38,8 @@ export const OrderStatusBanner = () => {
   const dishesPreparing = currentOrder.dishes.filter(d => d.status === DishStatus.Preparing).length;
 
   const handleClick = () => {
-    if (currentOrder.id && restaurantId && tableId) {
-      navigate(`/${restaurantId}/${tableId}/order/${currentOrder.id}`);
+    if (currentOrder.id && restaurantId && qrId) {
+      navigate(`/${restaurantId}/${qrId}/order/${currentOrder.id}`);
     }
   };
 

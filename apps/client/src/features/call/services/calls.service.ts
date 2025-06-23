@@ -1,101 +1,77 @@
-import { collection, addDoc, query, where, getDocs, updateDoc, doc } from 'firebase/firestore';
-import { db } from '@/config/firebase.config';
+import { collection, addDoc, getDocs, query, where, orderBy, limit, doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../config/firebase.config';
+import type { Call, CallType, CallStatus } from '../../../types/types';
 
-export interface Call {
-  id: string;
-  tableId: string;
-  type: 'waiter_call' | 'payment_call';
-  status: 'active' | 'completed' | 'cancelled';
-  createdAt: Date;
-  updatedAt: Date;
-}
+export async function hasActiveCall(qrId: string, type: CallType, restaurantId: string): Promise<boolean> {
+  if (!qrId) return false;
 
-export type CallType = 'waiter_call' | 'payment_call';
-export type PaymentMethod = 'qr' | 'card' | 'cash';
-
-interface CallData {
-  paymentMethod?: PaymentMethod;
-}
-
-export const hasActiveCall = async (tableId: string, type: CallType): Promise<boolean> => {
-  if (!tableId) return false;
-  
-  const callsQuery = query(
+  const q = query(
     collection(db, 'calls'),
-    where('tableId', '==', tableId),
+    where('qrId', '==', qrId),
+    where('restaurantId', '==', restaurantId),
     where('type', '==', type),
-    where('status', '==', 'active')
+    where('status', '==', 'active'),
+    orderBy('timestamp', 'desc'),
+    limit(1)
   );
-  
-  const snapshot = await getDocs(callsQuery);
-  return !snapshot.empty;
-};
 
-export class CallsService {
-  private static instance: CallsService;
-  private readonly callsCollection = collection(db, 'calls');
+  const querySnapshot = await getDocs(q);
+  return !querySnapshot.empty;
+}
 
-  private constructor() {}
-
-  public static getInstance(): CallsService {
-    if (!CallsService.instance) {
-      CallsService.instance = new CallsService();
-    }
-    return CallsService.instance;
+export async function createCall(qrId: string, type: CallType, restaurantId: string, data?: Call['data'], ): Promise<string> {
+  if (!qrId) {
+    throw new Error('QR ID is required');
   }
 
-  async createCall(tableId: string, type: CallType, data?: CallData): Promise<string> {
-    if (!tableId) {
-      throw new Error('Table ID is required');
-    }
+  const callData: Call = {
+    qrId,
+    timestamp: new Date(),
+    type,
+    status: 'active' as CallStatus,
+    data,
+    restaurantId: restaurantId
+  };
 
-    const docRef = await addDoc(this.callsCollection, {
-      tableId,
-      type,
-      status: 'active',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-      ...data
-    });
-    return docRef.id;
+  const docRef = await addDoc(collection(db, 'calls'), callData);
+  return docRef.id;
+}
+
+export async function getActiveCall(qrId: string, type: CallType, restaurantId: string): Promise<Call | null> {
+  const q = query(
+    collection(db, 'calls'),
+    where('qrId', '==', qrId),
+    where('restaurantId', '==', restaurantId),
+    where('type', '==', type),
+    where('status', '==', 'active'),
+    orderBy('timestamp', 'desc'),
+    limit(1)
+  );
+
+  const querySnapshot = await getDocs(q);
+  if (querySnapshot.empty) {
+    return null;
   }
 
-  async getActiveCall(tableId: string, type: CallType) {
-    const callsQuery = query(
-      this.callsCollection,
-      where('tableId', '==', tableId),
-      where('type', '==', type),
-      where('status', '==', 'active')
-    );
+  const doc = querySnapshot.docs[0];
+  return {
+    id: doc.id,
+    ...doc.data()
+  } as Call;
+}
 
-    const snapshot = await getDocs(callsQuery);
-    if (snapshot.empty) {
-      return null;
-    }
+export async function completeCall(callId: string): Promise<void> {
+  const callRef = doc(collection(db, 'calls'), callId);
+  await updateDoc(callRef, {
+    status: 'resolved' as CallStatus,
+    timestamp: new Date()
+  });
+}
 
-    const doc = snapshot.docs[0];
-    const data = doc.data();
-    return {
-      id: doc.id,
-      ...data,
-      createdAt: data.createdAt?.toDate?.() || new Date(),
-      updatedAt: data.updatedAt?.toDate?.() || new Date(),
-    };
-  }
-
-  async completeCall(callId: string): Promise<void> {
-    const callRef = doc(this.callsCollection, callId);
-    await updateDoc(callRef, {
-      status: 'completed',
-      updatedAt: new Date(),
-    });
-  }
-
-  async cancelCall(callId: string): Promise<void> {
-    const callRef = doc(this.callsCollection, callId);
-    await updateDoc(callRef, {
-      status: 'cancelled',
-      updatedAt: new Date(),
-    });
-  }
+export async function cancelCall(callId: string): Promise<void> {
+  const callRef = doc(collection(db, 'calls'), callId);
+  await updateDoc(callRef, {
+    status: 'resolved' as CallStatus,
+    timestamp: new Date()
+  });
 } 

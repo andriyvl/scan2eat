@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
-import { hasActiveCall as checkActiveCall, CallsService } from './services/calls.service';
+import { hasActiveCall as checkActiveCall, createCall } from './services/calls.service';
 import { Bell } from 'lucide-react';
 import { IconButton } from '@/components/ui/icon-button';
 
@@ -12,27 +12,27 @@ interface WaiterCallProps {
 
 export const WaiterCall = ({ className = '', iconOnly = false }: WaiterCallProps) => {
   const { t } = useTranslation();
-  const { tableId } = useTable();
+  const { qrId, restaurantId } = useTable();
   const [isCalling, setIsCalling] = useState(false);
   const [hasActiveCall, setHasActiveCall] = useState(false);
 
   useEffect(() => {
     const checkCall = async () => {
-      if (!tableId) return;
-      const hasCall = await checkActiveCall(tableId, 'waiter_call');
+      if (!qrId || !restaurantId) return;
+      const hasCall = await checkActiveCall(qrId, 'waiter_call', restaurantId);
       setHasActiveCall(hasCall);
     };
     // TODO fix this. call every 2 minutes.
 
     checkCall();
-  }, [tableId]);
+  }, [qrId, restaurantId]);
 
   const handleCallWaiter = async () => {
-    if (!tableId) return;
+    if (!qrId || !restaurantId) return;
 
     try {
       setIsCalling(true);
-      await CallsService.getInstance().createCall(tableId, 'waiter_call');
+      await createCall(qrId, 'waiter_call', restaurantId);
       setHasActiveCall(true);
     } catch (error) {
       console.error('Error calling waiter:', error);

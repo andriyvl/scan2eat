@@ -19,14 +19,6 @@ interface DishPreviewDrawerProps {
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
-// Example add-ons for demo
-const ADDONS = [
-  { name: 'Extra Egg', desc: 'Soft-boiled egg', price: 10000 },
-  { name: 'Extra Chicken', desc: 'Additional sliced chicken', price: 15000 },
-  { name: 'Extra Noodles', desc: 'More rice noodles', price: 8000 },
-  { name: 'Extra Herbs', desc: 'Fresh basil & cilantro', price: 0 },
-];
-
 export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
   const { t } = useTranslation();
   const [selectedAddons, setSelectedAddons] = React.useState<string[]>([]);
@@ -41,17 +33,17 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
     );
   };
 
-  const total = dish.basePrice + ADDONS.filter(a => selectedAddons.includes(a.name)).reduce((sum, a) => sum + a.price, 0);
+  const total = dish.basePrice + dish.addonOptions.filter(a => selectedAddons.includes(a.key)).reduce((sum, a) => sum + a.price, 0);
 
   const handleAddToOrder = async () => {
     if (adding) return;
     setAdding(true);
     setDish({
       dishId: dish.id,
-      name: dish.name,
+      key: dish.key,
       basePrice: dish.basePrice,
       price: total,
-      addons: ADDONS.filter(a => selectedAddons.includes(a.name)).map(a => ({ name: a.name, price: a.price })),
+      addons: dish.addonOptions.filter(a => selectedAddons.includes(a.key)).map(a => ({ key: a.key, price: a.price })),
       comment: comment.trim() || "",
       takeaway,
       status: DishStatus.Awaiting,
@@ -70,7 +62,7 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
         <div className="relative w-full" style={{height: '240px'}}>
           <img
             src={STATIC_DISH_IMAGE}
-            alt={dish.name}
+            alt={t(`dishes.${dish.key}.name`)}
             className="w-full h-full object-cover select-none pointer-events-none"
             draggable={false}
             style={{height: '240px'}}
@@ -97,7 +89,7 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
         {/* Main content with rounded top corners, starts below image */}
         <div className="bg-white rounded-t-3xl -mt-8 pt-8 px-6 pb-32 relative z-10 shadow-xl">
           <div className="flex items-center justify-between mb-2">
-            <h2 className="font-bold text-2xl">{dish.name}</h2>
+            <h2 className="font-bold text-2xl">{t(`dishes.${dish.key}.name`)}</h2>
             <div className="text-right">
               <div className="text-red-500 font-bold text-2xl">₫{dish.basePrice.toLocaleString()}</div>
               <div className="text-xs text-gray-400">per portion</div>
@@ -109,27 +101,27 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
             <span className="flex items-center text-xs text-gray-700 font-medium"><span className="mr-1">★</span>4.8 <span className="ml-1 text-gray-400">(127)</span></span>
           </div>
           <div className="text-gray-700 text-base mb-4">
-            Traditional Vietnamese chicken noodle soup with rice noodles, tender chicken, fresh herbs, bean sprouts, and aromatic broth simmered for hours. Served with lime, chili, and hoisin sauce on the side.
+            {t(`dishes.${dish.key}.description`)}
           </div>
           {/* Add-ons */}
-          <div className="mb-4">
+          {dish.addonOptions.length > 0 && <div className="mb-4">
             <div className="font-semibold mb-2">Add-ons</div>
             <div className="flex flex-col gap-3">
-              {ADDONS.map((addon) => {
-                const selected = selectedAddons.includes(addon.name);
+              {dish.addonOptions.map((addon) => {
+                const selected = selectedAddons.includes(addon.key);
                 return (
                   <SelectButton
-                    key={addon.name}
+                    key={addon.key}
                     isSelected={selected}
-                    onClick={() => toggleAddon(addon.name)}
-                    title={addon.name}
-                    description={addon.desc}
+                    onClick={() => toggleAddon(addon.key)}
+                    title={t(`addons.${addon.key}.name`)}
+                    description={t(`addons.${addon.key}.description`)}
                     price={addon.price}
                   />
                 );
               })}
             </div>
-          </div>
+          </div>}
           {/* Takeaway */}
           <div className="mb-4">
             <ToggleOption

@@ -1,207 +1,184 @@
+exports.restaurants = [
+  {
+    key: 'scan2eat_demo',
+    name: 'Scan2Eat',
+    defaultLang: 'en',
+    ownerEmail: 'admin@scan2eat.app'
+  }
+];
+
 exports.categories = [
-  { name: 'Noodles', sortOrder: 1 },
-  { name: 'Rice Dishes', sortOrder: 2 },
-  { name: 'Appetizers', sortOrder: 3 },
-  { name: 'Drinks', sortOrder: 4 },
-  { name: 'Desserts', sortOrder: 5 },
-  { name: 'Burgers', sortOrder: 6 },
-  { name: 'Salads', sortOrder: 7 }
+  { key: 'noodles', name: 'Noodles', sortOrder: 1 },
+  { key: 'rice_dishes', name: 'Rice Dishes', sortOrder: 2 },
+  { key: 'appetizers', name: 'Appetizers', sortOrder: 3 },
+  { key: 'drinks', name: 'Drinks', sortOrder: 4 },
+  { key: 'desserts', name: 'Desserts', sortOrder: 5 },
+  { key: 'burgers', name: 'Burgers', sortOrder: 6 },
+  { key: 'salads', name: 'Salads', sortOrder: 7 }
+];
+
+exports.tables = [
+  { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1A' },
+  { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1B' },
+  { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1C' },
+  { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1D' },
+  { tableNumber: 'A2', restaurantId: 'scan2eat_demo', qrId: 'A2A' },
+  { tableNumber: 'A2', restaurantId: 'scan2eat_demo', qrId: 'A2B' },
+  { tableNumber: 'A2', restaurantId: 'scan2eat_demo', qrId: 'A2C' },
+  { tableNumber: 'A2', restaurantId: 'scan2eat_demo', qrId: 'A2D' },
+  { tableNumber: 'A3', restaurantId: 'scan2eat_demo', qrId: 'A3A' },
+  { tableNumber: 'A3', restaurantId: 'scan2eat_demo', qrId: 'A3B' },
+  { tableNumber: 'A3', restaurantId: 'scan2eat_demo', qrId: 'A3C' },
+  { tableNumber: 'A3', restaurantId: 'scan2eat_demo', qrId: 'A3D' },
 ];
 
 exports.dishes = [
   // Noodles
   {
-    name: 'Phở Bò',
-    categoryName: 'Noodles',
-    description: 'Vietnamese beef noodle soup',
+    key: 'pho_bo',
+    categoryId: '', // Will be populated during seeding
     basePrice: 55000,
     imageUrl: 'https://example.com/pho.jpg',
-    addons: [
-      { name: 'Extra Egg', price: 10000 },
-      { name: 'No Cilantro', price: 0 }
-    ],
-    translations: {
-      en: { name: 'Beef Pho', description: 'Vietnamese beef noodle soup' },
-      vi: { name: 'Phở Bò', description: 'Phở bò truyền thống' }
-    }
+    tags: ['popular', 'hot'],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   {
-    name: 'Bún Chả',
-    categoryName: 'Noodles',
-    description: 'Grilled pork with rice vermicelli',
+    key: 'bun_cha',
+    categoryId: '', // Will be populated during seeding
     basePrice: 45000,
     imageUrl: 'https://example.com/buncha.jpg',
-    addons: [
-      { name: 'Extra Pork', price: 15000 },
-      { name: 'Extra Noodles', price: 10000 }
-    ],
-    translations: {
-      en: { name: 'Bun Cha', description: 'Grilled pork with rice vermicelli' },
-      vi: { name: 'Bún Chả', description: 'Bún chả Hà Nội' }
-    }
+    tags: ['popular'],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   // Rice Dishes
   {
-    name: 'Cơm Sườn',
-    categoryName: 'Rice Dishes',
-    description: 'Grilled pork chop with rice',
+    key: 'com_suon',
+    categoryId: '', // Will be populated during seeding
     basePrice: 40000,
     imageUrl: 'https://example.com/comsuon.jpg',
-    addons: [
-      { name: 'Extra Pork', price: 15000 },
-      { name: 'Extra Rice', price: 5000 }
-    ],
-    translations: {
-      en: { name: 'Com Suon', description: 'Grilled pork chop with rice' },
-      vi: { name: 'Cơm Sườn', description: 'Cơm sườn nướng' }
-    }
+    tags: ['popular'],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   {
-    name: 'Cơm Gà Hải Nam',
-    categoryName: 'Rice Dishes',
-    description: 'Hainanese chicken rice',
+    key: 'com_ga',
+    categoryId: '', // Will be populated during seeding
     basePrice: 42000,
     imageUrl: 'https://example.com/comga.jpg',
-    addons: [
-      { name: 'Extra Chicken', price: 12000 }
-    ],
-    translations: {
-      en: { name: 'Hainanese Chicken Rice', description: 'Hainanese chicken rice' },
-      vi: { name: 'Cơm Gà Hải Nam', description: 'Cơm gà Hải Nam' }
-    }
+    tags: [],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   // Appetizers
   {
-    name: 'Gỏi Cuốn',
-    categoryName: 'Appetizers',
-    description: 'Fresh spring rolls',
+    key: 'goi_cuon',
+    categoryId: '', // Will be populated during seeding
     basePrice: 35000,
     imageUrl: 'https://example.com/goicuon.jpg',
-    addons: [
-      { name: 'Extra Peanut Sauce', price: 5000 }
-    ],
-    translations: {
-      en: { name: 'Goi Cuon', description: 'Fresh spring rolls' },
-      vi: { name: 'Gỏi Cuốn', description: 'Gỏi cuốn tôm thịt' }
-    }
+    tags: ['vegetarian'],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   {
-    name: 'Chả Giò',
-    categoryName: 'Appetizers',
-    description: 'Fried spring rolls',
+    key: 'cha_gio',
+    categoryId: '', // Will be populated during seeding
     basePrice: 30000,
     imageUrl: 'https://example.com/chagio.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Fried Spring Rolls', description: 'Fried spring rolls' },
-      vi: { name: 'Chả Giò', description: 'Chả giò chiên giòn' }
-    }
+    tags: [],
+    addonOptions: [],
   },
   // Drinks
   {
-    name: 'Trà Đá',
-    categoryName: 'Drinks',
-    description: 'Iced tea',
+    key: 'tra_da',
+    categoryId: '', // Will be populated during seeding
     basePrice: 10000,
     imageUrl: 'https://example.com/trada.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Iced Tea', description: 'Vietnamese iced tea' },
-      vi: { name: 'Trà Đá', description: 'Trà đá' }
-    }
+    tags: [],
+    addonOptions: [],
   },
   {
-    name: 'Cà Phê Sữa Đá',
-    categoryName: 'Drinks',
-    description: 'Vietnamese iced coffee with milk',
+    key: 'ca_phe_sua_da',
+    categoryId: '', // Will be populated during seeding
     basePrice: 25000,
     imageUrl: 'https://example.com/caphe.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Iced Milk Coffee', description: 'Vietnamese iced coffee with milk' },
-      vi: { name: 'Cà Phê Sữa Đá', description: 'Cà phê sữa đá Việt Nam' }
-    }
+    tags: [],
+    addonOptions: [],
   },
   // Desserts
   {
-    name: 'Chè Ba Màu',
-    categoryName: 'Desserts',
-    description: 'Three-color dessert with beans, jelly, and coconut milk',
+    key: 'che_ba_mau',
+    categoryId: '', // Will be populated during seeding
     basePrice: 25000,
     imageUrl: 'https://example.com/chebamau.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Three Color Dessert', description: 'Three-color dessert with beans, jelly, and coconut milk' },
-      vi: { name: 'Chè Ba Màu', description: 'Chè ba màu truyền thống' }
-    }
+    tags: ['vegetarian', 'sweet'],
+    addonOptions: [],
   },
   {
-    name: 'Bánh Flan',
-    categoryName: 'Desserts',
-    description: 'Vietnamese caramel flan',
+    key: 'banh_flan',
+    categoryId: '', // Will be populated during seeding
     basePrice: 20000,
     imageUrl: 'https://example.com/flan.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Caramel Flan', description: 'Vietnamese caramel flan' },
-      vi: { name: 'Bánh Flan', description: 'Bánh flan caramel' }
-    }
+    tags: ['vegetarian', 'sweet'],
+    addonOptions: [],
   },
   // Burgers
   {
-    name: 'Classic Beef Burger',
-    categoryName: 'Burgers',
-    description: 'Juicy beef patty with lettuce, tomato, and cheese',
+    key: 'beef_burger',
+    categoryId: '', // Will be populated during seeding
     basePrice: 60000,
     imageUrl: 'https://example.com/beefburger.jpg',
-    addons: [
-      { name: 'Extra Cheese', price: 10000 },
-      { name: 'Bacon', price: 12000 }
-    ],
-    translations: {
-      en: { name: 'Classic Beef Burger', description: 'Juicy beef patty with lettuce, tomato, and cheese' },
-      vi: { name: 'Bánh Mì Bò', description: 'Bánh mì kẹp thịt bò, rau xà lách, cà chua, phô mai' }
-    }
+    tags: ['popular'],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   {
-    name: 'Chicken Burger',
-    categoryName: 'Burgers',
-    description: 'Crispy chicken fillet with mayo and pickles',
+    key: 'chicken_burger',
+    categoryId: '', // Will be populated during seeding
     basePrice: 55000,
     imageUrl: 'https://example.com/chickenburger.jpg',
-    addons: [
-      { name: 'Spicy Sauce', price: 5000 }
-    ],
-    translations: {
-      en: { name: 'Chicken Burger', description: 'Crispy chicken fillet with mayo and pickles' },
-      vi: { name: 'Bánh Mì Gà', description: 'Bánh mì kẹp gà chiên giòn, sốt mayonnaise, dưa leo' }
-    }
+    tags: [],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   },
   // Salads
   {
-    name: 'Green Papaya Salad',
-    categoryName: 'Salads',
-    description: 'Shredded green papaya with herbs, peanuts, and tangy dressing',
+    key: 'papaya_salad',
+    categoryId: '', // Will be populated during seeding
     basePrice: 35000,
     imageUrl: 'https://example.com/papaya-salad.jpg',
-    addons: [],
-    translations: {
-      en: { name: 'Green Papaya Salad', description: 'Shredded green papaya with herbs, peanuts, and tangy dressing' },
-      vi: { name: 'Gỏi Đu Đủ', description: 'Gỏi đu đủ xanh, rau thơm, đậu phộng, nước trộn chua ngọt' }
-    }
+    tags: ['vegetarian', 'spicy'],
+    addonOptions: [],
   },
   {
-    name: 'Chicken Caesar Salad',
-    categoryName: 'Salads',
-    description: 'Grilled chicken, romaine, croutons, and Caesar dressing',
+    key: 'caesar_salad',
+    categoryId: '', // Will be populated during seeding
     basePrice: 45000,
     imageUrl: 'https://example.com/caesar-salad.jpg',
-    addons: [
-      { name: 'Extra Chicken', price: 15000 }
-    ],
-    translations: {
-      en: { name: 'Chicken Caesar Salad', description: 'Grilled chicken, romaine, croutons, and Caesar dressing' },
-      vi: { name: 'Salad Gà Caesar', description: 'Salad gà nướng, xà lách Romaine, bánh mì nướng, sốt Caesar' }
-    }
+    tags: [],
+    addonOptions: [], // Will be populated with addon IDs during seeding
   }
-]; 
+];
+
+exports.addons = [
+  { key: 'extra_egg', price: 10000 },
+  { key: 'no_cilantro', price: 0 },
+  { key: 'extra_chicken', price: 15000 },
+  { key: 'extra_noodles', price: 10000 },
+  { key: 'extra_pork', price: 15000 },
+];
+
+exports.tags = [
+  { key: 'vegetarian' },
+  { key: 'vegan' },
+  { key: 'gluten-free' },
+  { key: 'halal' },
+  { key: 'kosher' },
+  { key: 'organic' },
+  { key: 'sustainable' },
+  { key: 'local' },
+  { key: 'seasonal' },
+  { key: 'spicy' },
+  { key: 'sweet' },
+  { key: 'salty' },
+  { key: 'sour' },
+  { key: 'bitter' },
+  { key: 'umami' },
+  { key: 'savory' },
+  { key: 'popular' },
+  { key: 'hot' }
+];

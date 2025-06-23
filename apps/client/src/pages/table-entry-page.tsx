@@ -1,34 +1,29 @@
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { useTable } from '@/contexts/table.context';
-import { MenuPage } from '@/features/menu/menu-page';
-import { doc, getDoc } from 'firebase/firestore';
-import { db } from '@/config/firebase.config';
+import { useTable } from '../contexts/table.context';
+import { MenuList } from '../features/menu/list/menu-list';
+import { Header } from '../components/header';
 
 export const TableEntryPage = () => {
-  const { restaurantId, tableId } = useParams();
+  const { restaurantId, qrId } = useParams();
   const { setContext } = useTable();
 
   useEffect(() => {
-    const initializeContext = async () => {
-    if (restaurantId && tableId) {
-      console.log('[TableEntry] Params:', { restaurantId, tableId });
-        
-        // Fetch restaurant name
-        try {
-          const restaurantDoc = await getDoc(doc(db, 'restaurants', restaurantId));
-          const restaurantName = restaurantDoc.data()?.name;
-          
-          setContext(restaurantId, tableId, restaurantName);
-        } catch (error) {
-          console.error('Error fetching restaurant:', error);
-      setContext(restaurantId, tableId);
+    if (restaurantId && qrId) {
+      console.log('[TableEntry] Params:', { restaurantId, qrId });
+      // TODO: Fetch restaurant name from Firestore
+      setContext(restaurantId, qrId, 'test');
+    } else {
+      setContext(restaurantId || '', qrId || '');
     }
-      }
-    };
+  }, [restaurantId, qrId]);
 
-    initializeContext();
-  }, [restaurantId, tableId]);
-
-  return <MenuPage />;
+  return (
+    <div className="flex flex-col min-h-screen">
+      <Header />
+      <main className="flex-1 p-4">
+        <MenuList />
+      </main>
+    </div>
+  );
 };

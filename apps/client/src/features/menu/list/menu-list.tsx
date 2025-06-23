@@ -1,18 +1,20 @@
 import { useEffect, useState } from 'react';
-import { OrderStatus, type Dish, type MenuCategory } from '@/types/types';
+import { type Dish, type MenuCategory } from '@/types/types';
 import { DishCard } from '../dish/dish-card';
 import { getMenuCategories, getDishes } from '../../../services/api.service';
 import OrderDishesButton from '@/features/order/preview/preview-order-button';
 import { OrderPreviewDrawer } from '@/features/order/preview/order-preview-drawer';
 import { CategoryTabs } from './category-tabs';
 import { OrderStatusBanner } from '../../order/current/order-status-banner';
+import { useTable } from '@/contexts/table.context';
 
-export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
+export const MenuList = () => {
   const [categories, setCategories] = useState<MenuCategory[]>([]);
   const [dishes, setDishes] = useState<Dish[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [orderDrawerOpen, setOrderDrawerOpen] = useState(false);
   const [dishPreviewOpen, setDishPreviewOpen] = useState(false);
+  const { restaurantId } = useTable();
 
   useEffect(() => {
     const fetchMenu = async () => {
@@ -33,7 +35,7 @@ export const MenuList = ({ restaurantId }: { restaurantId: string }) => {
   return (
     <div className="flex flex-col h-full min-h-0">
       <div className="sticky top-0 z-20 bg-white">
-        <OrderStatusBanner status={OrderStatus.Paid} />
+        <OrderStatusBanner />
         <CategoryTabs categories={categories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory} />
       </div>
       <div className="flex-1 min-h-0 overflow-y-auto">

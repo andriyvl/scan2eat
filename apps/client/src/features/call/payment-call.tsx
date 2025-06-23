@@ -2,30 +2,30 @@ import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useTable } from '@/contexts/table.context';
 import { PaymentMethodModal } from './payment-method-modal';
-import { CallsService } from './services/calls.service';
+import { createCall } from './services/calls.service';
+import { getActiveCall } from './services/calls.service';
 
 export const PaymentCall = () => {
   const { t } = useTranslation();
-  const { tableId } = useTable();
+  const { qrId, restaurantId } = useTable();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [activeCallId, setActiveCallId] = useState<string | null>(null);
 
   useEffect(() => {
     const checkActiveCall = async () => {
-      if (!tableId) return;
-      
-      const callsService = CallsService.getInstance();
-      const activeCall = await callsService.getActiveCall(tableId, 'payment_call');
+      if (!qrId || !restaurantId) return;
+
+      const activeCall = await getActiveCall(qrId, 'payment_call', restaurantId);
       
       if (activeCall) {
         setIsWaiting(true);
-        setActiveCallId(activeCall.id);
+        setActiveCallId(activeCall?.id || null);
       }
     };
 
     checkActiveCall();
-  }, [tableId]);
+  }, [qrId, restaurantId]);
 
   const handleRequestBill = () => {
     setIsModalOpen(true);
@@ -36,10 +36,9 @@ export const PaymentCall = () => {
   };
 
   const handlePaymentSuccess = async () => {
-    if (!tableId) return;
+    if (!qrId) return;
 
-    const callsService = CallsService.getInstance();
-    const callId = await callsService.createCall(tableId, 'payment_call');
+    const callId = await createCall(qrId, 'payment_call', restaurantId);
     
     setIsModalOpen(false);
     setIsWaiting(true);

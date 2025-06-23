@@ -1,33 +1,36 @@
-export type Addon = {
-    name: string;
-    price: number;
-    custom?: boolean;
-  };
-  
+import { Timestamp } from 'firebase/firestore';
 
-  
-  export type MenuCategory = {
-    id: string;
-    categoryName: string;
-    sortOrder: number;
-    restaurantId: string;
-  };
-  
-
-  import { Timestamp } from 'firebase/firestore';
+export type MenuCategory = {
+  id: string;
+  key: string;
+  sortOrder: number;
+  restaurantId: string;
+};
 
 export interface OrderAddon {
-  name: string;
+  id?: string;
+  key: string;
   price: number;
+  description?: string;
 }
+
+export type Addon = {
+  id?: string;
+  restaurantId?: string;
+  key: string;
+  description?: string;
+  price: number;
+  custom?: boolean;
+};
+
 
 export type Dish = {
   id: string;
-  name: string;
+  key: string;
   description: string;
   image?: string;
   basePrice: number;
-  addons: Addon[];
+  addonOptions: Addon[];
   categoryId: string;
   tags?: string[];
   translations?: {
@@ -40,7 +43,7 @@ export type Dish = {
 
 export interface OrderDish {
   dishId: string;
-  name: string;
+  key: string;
   basePrice: number; // price of the dish without addons
   price: number; // price of the dish with addons
   addons: OrderAddon[]; // selected addons
@@ -51,7 +54,7 @@ export interface OrderDish {
 
 export interface Order {
   id: string;
-  tableId: string;
+  qrId: string;
   language: string;
   isTakeaway: boolean;
   orderComment: string;
@@ -76,4 +79,21 @@ export enum DishStatus {
   Preparing = 'preparing',
   Ready = 'ready',
   DishDelivered = 'dish_delivered',
-} 
+}
+
+export type CallType = 'waiter_call' | 'payment_call';
+export type CallStatus = 'active' | 'resolved';
+export type PaymentMethod = 'qr' | 'card' | 'cash';
+
+
+export interface Call {
+  id?: string;
+  qrId: string;
+  timestamp: Date;
+  type: CallType;
+  status: CallStatus;
+  restaurantId: string;
+  data?: {
+    paymentMethod?: PaymentMethod;
+  };
+}

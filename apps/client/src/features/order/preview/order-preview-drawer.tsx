@@ -9,11 +9,14 @@ import { X, ChefHat } from 'lucide-react';
 import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { OrderStatusBanner } from '../current/order-status-banner';
+import { useTranslation } from 'react-i18next';
+
 export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
   const { dishes, removeDish, clearOrder } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
-  const { restaurantId, tableId } = useTable();
+  const { restaurantId, qrId } = useTable();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -30,12 +33,12 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
       if (currentOrderId) {
         await updateExistingOrder(currentOrderId, dishes);
         clearOrder();
-        navigate(`/${restaurantId}/${tableId}/order/${currentOrderId}`);
+        navigate(`/${restaurantId}/${qrId}/order/${currentOrderId}`);
       } else {
-        const orderId = await submitNewOrder(tableId, language, dishes, total);
+        const orderId = await submitNewOrder(qrId, language, dishes, total);
         localStorage.setItem('currentOrderId', orderId);
         clearOrder();
-        navigate(`/${restaurantId}/${tableId}/order/${orderId}`);
+        navigate(`/${restaurantId}/${qrId}/order/${orderId}`);
       }
     } catch (err) {
       console.error(err);
@@ -51,10 +54,10 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent isOverlayImage className="!p-0 !m-0 !bg-transparent">
         <div className="bg-white rounded-t-3xl w-full shadow-2xl max-h-[90vh] overflow-y-auto">
-          <DialogTitle className="sr-only">Preview order</DialogTitle>
+          <DialogTitle className="sr-only">{t('preview_order')}</DialogTitle>
           <div className="p-6 pt-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-2xl font-bold">Order preview</h3>
+              <h3 className="text-2xl font-bold">{t('order_preview')}</h3>
               <DrawerClose asChild>
                 <button className="p-2 rounded-full hover:bg-gray-100">
                   <X size={24} />
@@ -69,17 +72,14 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
                 <div key={`dish-${d.dishId}-preview`} className="flex items-center py-4 gap-4">
                   <img
                     src="https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png"
-                    alt={d.name}
+                    alt={t(`dishes.${d.key}.name`)}
                     className="w-14 h-14 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-base truncate">{d.name}</div>
+                    <div className="font-semibold text-base truncate">{t(`dishes.${d.key}.name`)}</div>
                     <div className="text-gray-500 text-sm truncate">
-                      {d.addons.map(a => a.name).join(' • ')}
+                      {d.addons.map(a => t(`addons.${a.key}.name`)).join(' • ')}
                       {d.comment ? ` • ${d.comment}` : ''}
-                    </div>
-                    <div className="mt-1">
-                      <span className="px-2 py-1 bg-yellow-100 text-yellow-700 text-xs rounded-full">Preparing</span>
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
@@ -114,7 +114,7 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
                 icon={<ChefHat size={22} />}
                 iconPosition="right"
               >
-                {submitting ? 'Sending...' : 'Send to kitchen'}
+                {submitting ? t('sending') : t('send_to_kitchen')}
               </SendToKitchenButton>
             </div>
           </div>
