@@ -23,35 +23,35 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     const initialize = async () => {
       try {
-        const langCol = collection(firestore, 'languages');
-        const langSnapshot = await getDocs(langCol);
-        const fetchedLanguages: Locale[] = langSnapshot.docs.map(doc => doc.data() as Locale);
+        const languageCollection = collection(firestore, 'languages');
+        const languageSnapshot = await getDocs(languageCollection);
+        const fetchedLanguages: Locale[] = languageSnapshot.docs.map(doc => doc.data() as Locale);
         setSupportedLanguages(fetchedLanguages);
         
-        const supportedLocaleIds = fetchedLanguages.map(l => l.id);
+        const supportedLocaleIds = fetchedLanguages.map(language => language.id);
         
-        let initialLanguage = 'en-US';
+        let initialLocale = 'en-US';
         const savedLanguage = localStorage.getItem(LANGUAGE_KEY);
         if (savedLanguage && supportedLocaleIds.includes(savedLanguage)) {
-          initialLanguage = savedLanguage;
+          initialLocale = savedLanguage;
         } else {
           const browserLang = navigator.language;
           if (supportedLocaleIds.includes(browserLang)) {
-            initialLanguage = browserLang;
+            initialLocale = browserLang;
           } else {
             const browserLangCode = browserLang.split('-')[0];
             const matchingLocale = supportedLocaleIds.find(id => id.startsWith(browserLangCode));
             if (matchingLocale) {
-              initialLanguage = matchingLocale;
+              initialLocale = matchingLocale;
             }
           }
         }
         
-        const langCode = initialLanguage;
+        const langCode = initialLocale;
         await loadTranslations(langCode);
         i18n.changeLanguage(langCode);
-        setLanguageState(initialLanguage);
-        localStorage.setItem(LANGUAGE_KEY, initialLanguage);
+        setLanguageState(initialLocale);
+        localStorage.setItem(LANGUAGE_KEY, initialLocale);
       } catch (error) {
         console.error('Failed to initialize language:', error);
         await loadTranslations('en-US');

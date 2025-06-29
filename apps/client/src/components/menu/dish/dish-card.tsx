@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { DishStatus, type Dish } from '@/types/types';
 import { Plus } from 'lucide-react';
 import { DishViewDrawer } from './dish-view-drawer';
-import { useOrderStore } from '@/features/order/order.store';
+import { useOrderStore } from '@/components/order/order.store';
 import { useTranslation } from 'react-i18next';
 import { DishTag } from './dish-tag';
 import { IconButton } from '@/components/ui/icon-button';
@@ -11,7 +11,7 @@ const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.c
 
 export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: (open: boolean) => void }) => {
   const [open, setOpen] = useState(false);
-  const setDish = useOrderStore((s) => s.setDish);
+  const setCartDish = useOrderStore((s) => s.setCartDish);
   const { t } = useTranslation();
   const dishName = t(`dishes.${dish.key}.name`);
   const dishDescription = t(`dishes.${dish.key}.description`);
@@ -28,7 +28,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
   };
 
   function addToCart(dish: Dish): void {
-    setDish({
+    setCartDish({
       dishId: dish.id,
       key: dish.key,
       basePrice: dish.basePrice,

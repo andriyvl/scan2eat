@@ -5,7 +5,7 @@ service cloud.firestore {
 
     // Public read-only collections
     match /restaurants/{restId} {
-      allow read: if true;
+      allow create, read, update, delete: if true;
     }
 
     match /tables/{tableId} {
@@ -27,15 +27,15 @@ service cloud.firestore {
     // Orders: anonymous users can create, not modify others
     match /orders/{orderId} {
       allow create: if true;
-      allow read: if request.auth != null;
-      allow update, delete: if request.auth != null;
+      allow read: if true; // if request.auth != null;
+      allow update, delete: if true; // if request.auth != null;
     }
 
     // Calls: same logic
     match /calls/{callId} {
-      allow create: if true;
-      allow read: if request.auth != null;
-      allow update: if request.auth != null;
+      allow create, read, update: if true;
+      // allow read: if request.auth != null;
+      // allow update: if request.auth != null;
     }
 
     // Users: only authenticated staff can read/write their own data
@@ -53,7 +53,7 @@ service cloud.firestore {
     // all client requests to your Firestore database will be denied until you Update
     // your rules
     match /{document=**} {
-      allow read, write: if request.time < timestamp.date(2025, 6, 29);
+      allow read, write, delete: if true; // request.time < timestamp.date(2025, 6, 29);
     }
   }
 }

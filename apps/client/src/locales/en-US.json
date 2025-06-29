@@ -197,5 +197,10 @@
         "savory": "Savory",
         "popular": "Popular",
         "hot": "Hot"
-    }
+    },
+    "base_price": "Base price",
+    "custom": "Custom",
+    "comment": "Comment",
+    "qty": "Qty",
+    "addon": "Addon"
 }

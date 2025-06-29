@@ -1,15 +1,17 @@
 import * as React from 'react';
 import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { X, Heart, Briefcase } from 'lucide-react';
-import type { Dish } from '@/types/types';
-import { AddToCardButton } from '@/features/menu/dish/add-to-card-button';
-import { useOrderStore } from '@/features/order/order.store';
+import type { Addon, Dish } from '@/types/types';
+import { AddToCardButton } from '@/components/menu/dish/add-to-card-button';
+import { useOrderStore } from '@/components/order/order.store';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { DishStatus } from '@/types/types';
 import { SelectButton } from '@/components/ui/select-button';
 import { IconButton } from "@/components/ui/icon-button";
 import { useTranslation } from 'react-i18next';
 import { ToggleOption } from "@/components/ui/toggle-option";
+import { useEffect, useState } from 'react';
+import { getAddons } from '@/services/api.service';
 
 interface DishPreviewDrawerProps {
   open: boolean;
@@ -21,11 +23,12 @@ const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.c
 
 export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
   const { t } = useTranslation();
-  const [selectedAddons, setSelectedAddons] = React.useState<string[]>([]);
-  const [takeaway, setTakeaway] = React.useState(false);
-  const [comment, setComment] = React.useState('');
-  const [adding, setAdding] = React.useState(false);
-  const setDish = useOrderStore((s) => s.setDish);
+  const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
+  const [addons, setAddons] = useState<Addon[]>([]);
+  const [takeaway, setTakeaway] = useState(false);
+  const [comment, setComment] = useState('');
+  const [adding, setAdding] = useState(false);
+  const setCartDish = useOrderStore((s) => s.setCartDish);
 
   const toggleAddon = (name: string) => {
     setSelectedAddons((prev) =>
@@ -33,17 +36,28 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
     );
   };
 
-  const total = dish.basePrice + dish.addonOptions.filter(a => selectedAddons.includes(a.key)).reduce((sum, a) => sum + a.price, 0);
+  useEffect(() => {
+    const fetchAddons = async () => {
+      const addons = await getAddons(dish.addonOptions);
+      setAddons(addons);
+    };
+    if (dish.addonOptions.length > 0) {
+      fetchAddons();
+    }
+  }, [dish]);
+
+  const total = dish.basePrice + addons.filter(a => selectedAddons.includes(a.key)).reduce((sum, a) => sum + a.price, 0);
+  const selectedOrderAddons = addons.filter(addon => selectedAddons.includes(addon.id as string)).map(addon => ({ id: addon.id, price: addon.price }));
 
   const handleAddToOrder = async () => {
     if (adding) return;
     setAdding(true);
-    setDish({
+      setCartDish({
       dishId: dish.id,
       key: dish.key,
       basePrice: dish.basePrice,
       price: total,
-      addons: dish.addonOptions.filter(a => selectedAddons.includes(a.key)).map(a => ({ key: a.key, price: a.price })),
+      addons: selectedOrderAddons,
       comment: comment.trim() || "",
       takeaway,
       status: DishStatus.Awaiting,
@@ -104,16 +118,16 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
             {t(`dishes.${dish.key}.description`)}
           </div>
           {/* Add-ons */}
-          {dish.addonOptions.length > 0 && <div className="mb-4">
+          {addons.length > 0 && <div className="mb-4">
             <div className="font-semibold mb-2">Add-ons</div>
             <div className="flex flex-col gap-3">
-              {dish.addonOptions.map((addon) => {
-                const selected = selectedAddons.includes(addon.key);
+              {addons.map((addon) => {
+                const selected = selectedAddons.includes(addon.id as string);
                 return (
                   <SelectButton
-                    key={addon.key}
+                    key={addon.id}
                     isSelected={selected}
-                    onClick={() => toggleAddon(addon.key)}
+                    onClick={() => toggleAddon(addon.id as string)}
                     title={t(`addons.${addon.key}.name`)}
                     description={t(`addons.${addon.key}.description`)}
                     price={addon.price}

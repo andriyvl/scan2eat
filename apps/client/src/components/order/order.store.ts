@@ -3,40 +3,45 @@ import { devtools } from 'zustand/middleware';
 import type { Order, OrderDish } from '@/types/types';
 
 type OrderStore = {
-  dishes: OrderDish[];
+  cartDishes: OrderDish[];
+  setCartDish: (dish: OrderDish) => void;
+  removeCartDish: (dishId: string) => void;
+  clearCartDishes: () => void;
+  updateCartDish: (dishId: string, updater: (dish: OrderDish) => OrderDish) => void;
+  
   isTakeaway: boolean;
-  setDish: (dish: OrderDish) => void;
-  removeDish: (dishId: string) => void;
-  clearOrder: () => void;
-  updateDish: (dishId: string, updater: (dish: OrderDish) => OrderDish) => void;
   setIsTakeaway: (isTakeaway: boolean) => void;
+
   currentOrder: Order | null;
   setCurrentOrder: (order: Order) => void;
+  getCurrentOrderId: () => string | null;
   clearCurrentOrder: () => void;
 };
 
 export const useOrderStore = create<OrderStore>()(
   devtools(
-    (set) => ({
-      dishes: [],
-      isTakeaway: false,
-      setDish: (newDish) =>
+    (set, get) => ({
+      cartDishes: [],
+      setCartDish: (newDish) =>
         set((state) => ({
-          dishes: [...state.dishes, newDish],
-        }), false, 'setDish'),
-      removeDish: (dishId) =>
+          cartDishes: [...state.cartDishes, newDish],
+        }), false, 'setCartDish'),
+      removeCartDish: (dishId) =>
         set((state) => ({
-          dishes: state.dishes.filter((d) => d.dishId !== dishId),
-        }), false, 'removeDish'),
-      clearOrder: () => set({ dishes: [] }, false, 'clearOrder'),
-      updateDish: (dishId, updater) =>
+          cartDishes: state.cartDishes.filter((d) => d.dishId !== dishId),
+        }), false, 'removeCartDish'),
+      clearCartDishes: () => set({ cartDishes: [] }, false, 'clearCartDishes'),
+      updateCartDish: (dishId, updater) =>
         set((state) => ({
-          dishes: state.dishes.map((dish) =>
+          cartDishes: state.cartDishes.map((dish) =>
             dish.dishId === dishId ? updater(dish) : dish
           ),
-        }), false, 'updateDish'),
+        }), false, 'updateCartDish'),
+
+      isTakeaway: false,
       setIsTakeaway: (isTakeaway) => set({ isTakeaway }, false, 'setIsTakeaway'),
       currentOrder: null,
+      getCurrentOrderId: () => get().currentOrder?.id,
       setCurrentOrder: (order) => set({ currentOrder: order }, false, 'setCurrentOrder'),
       clearCurrentOrder: () => set({ currentOrder: null }, false, 'clearCurrentOrder'),
     }),

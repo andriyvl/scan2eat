@@ -1,7 +1,8 @@
-import { MenuList } from '../features/menu/list/menu-list';
+import { MenuList } from '../components/menu/list/menu-list';
 import { Header } from '../components/header';
 
 export const MenuPage = () => {
+
   return (
     <div className="flex flex-col min-h-screen">
       <Header />

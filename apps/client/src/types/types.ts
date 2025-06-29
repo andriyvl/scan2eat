@@ -9,18 +9,14 @@ export type MenuCategory = {
 
 export interface OrderAddon {
   id?: string;
-  key: string;
   price: number;
-  description?: string;
 }
 
 export type Addon = {
   id?: string;
   restaurantId?: string;
   key: string;
-  description?: string;
   price: number;
-  custom?: boolean;
 };
 
 
@@ -30,7 +26,7 @@ export type Dish = {
   description: string;
   image?: string;
   basePrice: number;
-  addonOptions: Addon[];
+  addonOptions: string[];
   categoryId: string;
   tags?: string[];
   translations?: {
@@ -55,6 +51,7 @@ export interface OrderDish {
 export interface Order {
   id: string;
   qrId: string;
+  restaurantId?: string;
   language: string;
   isTakeaway: boolean;
   orderComment: string;
@@ -96,6 +93,21 @@ export interface Call {
   data?: {
     paymentMethod?: PaymentMethod;
   };
+}
+
+export interface Restaurant {
+  id: string;
+  key: string;
+  defaultLang: string;
+  createdAt: Timestamp;
+  ownerEmail: string;
+}
+
+export interface QrCode {
+  id: string;
+  tableNumber: string;
+  restaurantId: string;
+  qrId: string;
 }
 
 export interface Locale {

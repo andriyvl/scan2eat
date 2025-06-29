@@ -17,7 +17,7 @@ exports.categories = [
   { key: 'salads', name: 'Salads', sortOrder: 7 }
 ];
 
-exports.tables = [
+exports.qrCodes = [
   { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1A' },
   { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1B' },
   { tableNumber: 'A1', restaurantId: 'scan2eat_demo', qrId: 'A1C' },

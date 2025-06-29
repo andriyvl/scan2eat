@@ -12,8 +12,8 @@ import {
   CreditCard,
   QrCode,
 } from 'lucide-react';
-import { useQrCode } from '@/contexts/qr-code.context';
-import { useOrderStore } from '@/features/order/order.store';
+import { useApp } from '@/contexts/app.context';
+import { useOrderStore } from '@/components/order/order.store';
 import { cn } from '@/utils/utils';
 
 const RESTAURANT_IMAGE_URL = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/fc46fd8759-7163ce2744f74232301d.png';
@@ -21,7 +21,7 @@ const RESTAURANT_IMAGE_URL = 'https://storage.googleapis.com/uxpilot-auth.appspo
 export const WelcomePage = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { restaurantKey, qrId } = useQrCode();
+  const { restaurantKey, qrId } = useApp();
   const restaurantName = restaurantKey ? t(`restaurants.${restaurantKey}.name`) : '';
   const slogan = restaurantKey ? t(`restaurants.${restaurantKey}.slogan`) : '';
   const { isTakeaway, setIsTakeaway } = useOrderStore();

@@ -66,3 +66,39 @@ export const updateExistingOrder = async (
     useOrderStore.getState().setCurrentOrder({ id: orderId, ...updatedSnap.data() } as Order);
   }
 };
+
+export const initCurrentOrder = async (restaurantId: string, qrId: string, orderId?: string): Promise<Order | null> => {
+  let order: Order | null = null;
+  
+  if (orderId) {
+    const orderRef = doc(db, 'orders', orderId);
+    const orderSnap = await getDoc(orderRef);
+    if (orderSnap.exists()) {
+      const orderData = orderSnap.data();
+      order = { id: orderRef.id, ...orderData } as Order;
+    }
+  } else {
+    const ordersRef = collection(db, 'orders');
+    const q = query(
+      ordersRef,
+      where('qrId', '==', qrId),
+      where('status', '!=', OrderStatus.Paid),
+      where('restaurantId', '==', restaurantId),
+      limit(1)
+    );
+  
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const orderData = querySnapshot.docs[0].data();
+      order = { id: querySnapshot.docs[0].id, ...orderData } as Order;
+    }
+  }
+
+
+  if (order) {
+    useOrderStore.getState().setCurrentOrder(order);
+    return order;
+  }
+
+  return null;
+};

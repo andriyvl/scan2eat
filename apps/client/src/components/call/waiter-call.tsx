@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { hasActiveCall as checkActiveCall, createCall } from './services/calls.service';
 import { Bell } from 'lucide-react';
 import { IconButton } from '@/components/ui/icon-button';
@@ -12,7 +12,7 @@ interface WaiterCallProps {
 
 export const WaiterCall = ({ className = '', iconOnly = false }: WaiterCallProps) => {
   const { t } = useTranslation();
-  const { qrId, restaurantId } = useQrCode();
+  const { qrId, restaurantId } = useApp();
   const [isCalling, setIsCalling] = useState(false);
   const [hasActiveCall, setHasActiveCall] = useState(false);
 

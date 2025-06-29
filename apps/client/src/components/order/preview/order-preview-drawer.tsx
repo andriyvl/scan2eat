@@ -1,7 +1,7 @@
 import { useOrderStore } from '../order.store';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/language.context';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
@@ -10,34 +10,41 @@ import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { OrderStatusBanner } from '../current/order-status-banner';
 import { useTranslation } from 'react-i18next';
+import { getAddons } from '@/services/api.service';
+import type { Addon } from '@/types/types';
 
 export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
-  const { dishes, removeDish, clearOrder } = useOrderStore();
+  const { cartDishes, removeCartDish, clearCartDishes } = useOrderStore();
   const [submitting, setSubmitting] = useState(false);
-  const { restaurantId, qrId } = useQrCode();
+  const { restaurantId, qrId } = useApp();
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const [currentOrderId, setCurrentOrderId] = useState<string | null>(null);
+  const currentOrderId = useOrderStore((s) => s.getCurrentOrderId());
+  const [addonsObjects, setAddonsObjects] = useState<Addon[]>([]);
+  
 
   useEffect(() => {
-    const storedOrderId = localStorage.getItem('currentOrderId');
-    setCurrentOrderId(storedOrderId);
-  }, []);
+    const fetchAddons = async () => {
+      const addons = await getAddons(cartDishes.flatMap(d => d.addons?.map(a => a.id as string) ?? []));
+      setAddonsObjects(addons);
+    };
+    fetchAddons();
+  }, [cartDishes]);
 
-  const total = calculateOrderTotal(dishes);
+  const total = calculateOrderTotal(cartDishes);
   const { language } = useLanguage();
 
   const handleSubmit = async () => {
     setSubmitting(true);
     try {
       if (currentOrderId) {
-        await updateExistingOrder(currentOrderId, dishes);
-        clearOrder();
+        await updateExistingOrder(currentOrderId, cartDishes);
+        clearCartDishes();
         navigate(`/${restaurantId}/${qrId}/order/${currentOrderId}`);
       } else {
-        const orderId = await submitNewOrder(qrId, language, dishes, total);
+        const orderId = await submitNewOrder(qrId, language, cartDishes, total);
         localStorage.setItem('currentOrderId', orderId);
-        clearOrder();
+        clearCartDishes();
         navigate(`/${restaurantId}/${qrId}/order/${orderId}`);
       }
     } catch (err) {
@@ -48,7 +55,11 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
     }
   };
 
-  if (!dishes.length) return null;
+  const getAddonNames = (addonIds: string[]) => {
+    return addonIds.map(id => `+ ${t(`addons.${addonsObjects.find(o => o.id === id)?.key}.name`)}`).join(', ');
+  };
+
+  if (!cartDishes.length) return null;
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
@@ -68,26 +79,26 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
               <div className="mb-2">
                 <OrderStatusBanner />
               </div>
-              {dishes.map((d, i) => (
-                <div key={`dish-${d.dishId}-preview`} className="flex items-center py-4 gap-4">
+              {cartDishes.map((dish, i) => (
+                <div key={`dish-${dish.dishId}-preview-${i}`} className="flex items-center py-4 gap-4">
                   <img
                     src="https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png"
-                    alt={t(`dishes.${d.key}.name`)}
+                    alt={t(`dishes.${dish.key}.name`)}
                     className="w-14 h-14 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-base truncate">{t(`dishes.${d.key}.name`)}</div>
+                    <div className="font-semibold text-base truncate">{t(`dishes.${dish.key}.name`)}</div>
                     <div className="text-gray-500 text-sm truncate">
-                      {d.addons.map(a => t(`addons.${a.key}.name`)).join(' • ')}
-                      {d.comment ? ` • ${d.comment}` : ''}
+                      {`${getAddonNames(dish.addons.map(a => a.id as string))}`}
+                      {dish.comment ? ` • ${dish.comment}` : ''}
                     </div>
                   </div>
                   <div className="text-right flex flex-col items-end gap-2">
-                    <div className="font-semibold text-lg">₫{d.price.toLocaleString()}</div>
+                    <div className="font-semibold text-lg">₫{dish.price.toLocaleString()}</div>
                     <div className="flex items-center space-x-2">
                       <button
                         className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-300"
-                        onClick={() => removeDish(d.dishId)}
+                        onClick={() => removeCartDish(dish.dishId)}
                       >
                         <span className="text-base">–</span>
                       </button>

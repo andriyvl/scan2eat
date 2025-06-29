@@ -201,6 +201,12 @@
         "savory": "Đậm Đà",
         "popular": "Phổ Biến",
         "hot": "Nóng"
-    }
+    },
+
+    "base_price": "Giá gốc",
+    "custom": "Tùy chỉnh",
+    "comment": "Ghi chú",
+    "qty": "SL",
+    "addon": "Thêm"
 }
   

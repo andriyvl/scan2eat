@@ -1,36 +1,36 @@
 import './app.css'
 import { BrowserRouter, Routes, Route, Outlet } from 'react-router-dom';
-import { QrCodeProvider } from './contexts/qr-code.context';
+import { AppProvider } from './contexts/app.context';
 import { MenuPage } from './pages/menu-page';
 import { OrderPage } from './pages/order-page';
 import { LanguagePage } from './pages/language-page';
 import { WelcomePage } from './pages/welcome-page';
+import { TablesPage } from './pages/tables-page';
 import { LanguageProvider } from './contexts/language.context';
 
-const TableLayout = () => {
+const AppLayout = () => {
   return (
-    <QrCodeProvider>
+    <AppProvider>
       <main className="flex-1 min-h-0 bg-main flex flex-col">
         <Outlet />
       </main>
-    </QrCodeProvider>
+    </AppProvider>
   );
 }
 
 export const App = () => {
   return (
     <BrowserRouter>
-      <LanguageProvider>
-        <main className="flex-1 min-h-0 bg-main flex flex-col">
+      <LanguageProvider>  
           <Routes>
-            <Route path=":restaurantId/:qrId" element={<TableLayout/>}>
-          <Route path="" element={<LanguagePage />} />
-            <Route path="welcome" element={<WelcomePage />} />
-            <Route path="menu" element={<MenuPage />} />
-            <Route path="order/:orderId" element={<OrderPage />} />
-          </Route>
+            <Route path="/" element={<TablesPage />} />
+            <Route path=":restaurantId/:qrId" element={<AppLayout />}>
+              <Route path="" element={<LanguagePage />} />
+              <Route path="welcome" element={<WelcomePage />} />
+              <Route path="menu" element={<MenuPage />} />
+              <Route path="order/:orderId" element={<OrderPage />} />
+            </Route>
           </Routes>
-        </main>
       </LanguageProvider>
     </BrowserRouter>
   );

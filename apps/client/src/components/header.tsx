@@ -1,28 +1,32 @@
 import { useTranslation } from 'react-i18next';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { QrCodeIcon, Utensils } from 'lucide-react';
 import { useState } from 'react';
-import { WaiterCall } from '@/features/call/waiter-call';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { WaiterCall } from '@/components/call/waiter-call';
+import { useLocation, useNavigate, useParams, } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { useLanguage } from '@/contexts/language.context';
 
 export const Header = () => {
   const { t } = useTranslation();
-  const { restaurantId, restaurantKey, qrId } = useQrCode();
+  const { restaurantKey } = useApp();
   const { language, setLanguage, supportedLanguages } = useLanguage();
   const [langDropdown, setLangDropdown] = useState(false);
+
+  const { restaurantId, qrId, orderId } = useParams();
+  const { pathname } = useLocation();
   
   const currentLang = supportedLanguages.find(l => l.id === language) || supportedLanguages[0];
   
-  const location = useLocation();
   const navigate = useNavigate();
-  const showBack = location.pathname.includes('/order/');
+  const showBack = !!orderId;
 
   const handleBackClick = () => {
 
-    if (restaurantId && qrId) {
+    if (pathname.includes('/menu')) {
       navigate(`/${restaurantId}/${qrId}`);
+    } else if (pathname.includes('/order') && orderId) {
+      navigate(`/${restaurantId}/${qrId}/menu`);
     } else {
       navigate(-1);
     }

@@ -1,13 +1,13 @@
 import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { PaymentMethodModal } from './payment-method-modal';
 import { createCall } from './services/calls.service';
 import { getActiveCall } from './services/calls.service';
 
 export const PaymentCall = () => {
   const { t } = useTranslation();
-  const { qrId, restaurantId } = useQrCode();
+  const { qrId, restaurantId } = useApp();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isWaiting, setIsWaiting] = useState(false);
   const [activeCallId, setActiveCallId] = useState<string | null>(null);

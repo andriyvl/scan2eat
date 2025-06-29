@@ -2,7 +2,7 @@ require('dotenv').config();
 const { initializeApp, cert } = require('firebase-admin/app');
 const { getFirestore, FieldValue } = require('firebase-admin/firestore');
 const serviceAccount = require('./service-account.json');
-const { restaurants, categories, dishes, addons, tags, tables } = require('./seed-menu.const');
+const { restaurants, categories, dishes, addons, tags, qrCodes } = require('./seed-menu.const');
 const { enTranslations, viTranslations } = require('./seed-translations.const');
 const { languageLocales } = require('./seed-languages.const');
 
@@ -13,14 +13,27 @@ initializeApp({
 const db = getFirestore();
 
 const shouldClear = process.argv.includes('--clean');
+console.log('shouldClear', shouldClear);
 const seedOnlyTranslations = process.argv.includes('--translations-only');
 
 async function clearCollection(collectionName) {
+  // Get documents
   const snap = await db.collection(collectionName).get();
+  console.log(`Found ${snap.size} documents in ${collectionName}`);
+  
+  if (snap.empty) {
+    console.log(`${collectionName} is already empty`);
+    return;
+  }
+  
+  // Delete them
   const batch = db.batch();
   snap.forEach((doc) => batch.delete(doc.ref));
   await batch.commit();
-  console.log(`🧹 Cleared ${collectionName}`);
+  
+  // Verify deletion with server data
+  const verifySnap = await db.collection(collectionName).get({ source: 'server' });
+  console.log(`🧹 Cleared ${collectionName} - ${snap.size} deleted, ${verifySnap.size} remaining`);
 }
 
 async function seedLanguages() {
@@ -58,7 +71,7 @@ async function seed() {
       await clearCollection('dishes');
       await clearCollection('orders');
       await clearCollection('calls');
-      await clearCollection('tables');
+      await clearCollection('qrCodes');
       await clearCollection('tags');
       await clearCollection('addons');
       await clearCollection('restaurants');
@@ -211,13 +224,13 @@ async function seed() {
     });
   }
 
-  // 🔸 Create Tables
-  for (const table of tables) {
-    const docRef = db.collection('tables').doc();
+  // 🔸 Create QrCodes
+  for (const qrCode of qrCodes) {
+    const docRef = db.collection('qrCodes').doc();
     batch.set(docRef, {
-      tableNumber: table.tableNumber,
-      restaurantId: restaurantIds[table.restaurantId],
-      qrId: table.qrId
+      tableNumber: qrCode.tableNumber,
+      restaurantId: restaurantIds[qrCode.restaurantId],
+      qrId: qrCode.qrId
     });
   }
 
@@ -226,10 +239,11 @@ async function seed() {
 
   // 🔸 Create example Order (separate transaction since we need dish ID)
   await db.collection('orders').add({
-    qrId: tables[0].qrId,
+    qrId: qrCodes[0].qrId,
     language: 'en',
     isTakeaway: false,
     orderComment: 'Allergic to peanuts',
+    restaurantId: restaurantIds['scan2eat_demo'],
     status: 'pending',
     price: 65000,
     createdAt: FieldValue.serverTimestamp(),
@@ -239,17 +253,17 @@ async function seed() {
         dishId: dishIds['pho_bo'],
         basePrice: 55000,
         price: 65000,
-        addons: [{ addonId: addonIds['extra_egg'], price: 10000 }],
+        addons: [{ id: addonIds['extra_egg'], price: 10000 }],
         comment: '',
         takeaway: false,
-        status: 'pending'
+        status: 'awaiting'
       }
     ]
   });
 
   // 🔸 Create example Call
   await db.collection('calls').add({
-    qrId: tables[0].qrId,
+    qrId: qrCodes[0].qrId,
     timestamp: FieldValue.serverTimestamp(),
     type: 'waiter_call',
     status: 'active',

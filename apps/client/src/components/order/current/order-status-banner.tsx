@@ -3,7 +3,7 @@ import { useOrderStore } from '../order.store';
 import { getOrderStatusColors } from '@/utils/status-colors';
 import { DishStatus, OrderStatus } from '@/types/types';
 import { useNavigate } from 'react-router-dom';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 
 const STATUS_CONFIG = {
   pending: {
@@ -26,16 +26,20 @@ const STATUS_CONFIG = {
   },
 };
 
-export const OrderStatusBanner = () => {
+export const OrderStatusBanner = ({ className }: { className?: string }) => {
   const currentOrder = useOrderStore((s) => s.currentOrder);
   const navigate = useNavigate();
-  const { restaurantId, qrId } = useQrCode();
+  const { restaurantId, qrId } = useApp();
   if (!currentOrder) return null;
   const status = currentOrder.status;
   const config = STATUS_CONFIG[status] || STATUS_CONFIG[OrderStatus.Pending];
   const colors = getOrderStatusColors(status);
 
-  const dishesPreparing = currentOrder.dishes.filter(d => d.status === DishStatus.Preparing).length;
+  const dishesPreparing = currentOrder.dishes.filter(d => {
+    return status === OrderStatus.Pending && d.status === DishStatus.Awaiting
+    || status === OrderStatus.InProgress && d.status === DishStatus.Preparing
+    || status === OrderStatus.Delivered && d.status === DishStatus.DishDelivered;
+  }).length;
 
   const handleClick = () => {
     if (currentOrder.id && restaurantId && qrId) {
@@ -45,7 +49,7 @@ export const OrderStatusBanner = () => {
 
   return (
     <div
-      className="border-l-4 p-3 rounded-r-lg flex items-center space-x-2 cursor-pointer hover:shadow-md transition-shadow"
+      className={`border-l-4 p-3 rounded-r-lg flex items-center space-x-2 cursor-pointer hover:shadow-md transition-shadow ${className}`}
       style={{ 
         background: colors.bg,
         borderColor: colors.border

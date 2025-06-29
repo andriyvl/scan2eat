@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { createCall } from './services/calls.service';
 import { SelectButton } from '@/components/ui/select-button';
 import { BanknoteIcon, CreditCardIcon, QrCodeIcon } from 'lucide-react';
@@ -14,7 +14,7 @@ interface PaymentMethodModalProps {
 
 export const PaymentMethodModal = ({ isOpen, onClose, onSuccess }: PaymentMethodModalProps) => {
   const { t } = useTranslation();
-  const { qrId, restaurantId } = useQrCode();
+  const { qrId, restaurantId } = useApp();
   const [selectedMethod, setSelectedMethod] = useState<'qr' | 'card' | 'cash' | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { useQrCode } from '@/contexts/qr-code.context';
+import { useApp } from '@/contexts/app.context';
 import { useOrderStore } from '../order.store';
 import { useTranslation } from 'react-i18next';
 import { OrderStatus } from '@/types/types';
@@ -14,7 +14,7 @@ import { CalendarIcon, ClockIcon, PlusIcon } from 'lucide-react';
 export const CurrentOrder = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { qrId, restaurantId } = useQrCode();
+  const { qrId, restaurantId } = useApp();
   const order = useOrderStore((s) => s.currentOrder);
 
   // Simulate loading state if order is null
@@ -29,6 +29,10 @@ export const CurrentOrder = () => {
 
   const canAddMoreItems = order.status !== OrderStatus.Paid;
 
+  const goToMenu = () => {
+    navigate(`/${restaurantId}/${qrId}/menu`);
+  };
+
   return (
 
       <>
@@ -36,7 +40,7 @@ export const CurrentOrder = () => {
         <CardHeader>
           <div className="flex items-center justify-between mb-1">
             <span className="font-semibold text-base">Order Status</span>
-            <StatusBadge status={order.status} type="order" size="sm" />
+            <StatusBadge status={order.status} type="order" size="md" />
           </div>
         </CardHeader>
         <CardContent>
@@ -63,9 +67,10 @@ export const CurrentOrder = () => {
 
       {canAddMoreItems && (
           <Button
-            onClick={() => navigate(`/${restaurantId}/${qrId}`)}
+            onClick={goToMenu}
             variant="outline"
             size="lg"
+            className="w-full"
           >
             <div className="flex items-center justify-center gap-2">
               <PlusIcon size={16} />
