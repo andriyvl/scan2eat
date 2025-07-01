@@ -1,15 +1,14 @@
 import type { Order, OrderDish } from '@/types/types';
 import { db } from '@/config/firebase.config';
-import { doc, updateDoc, arrayUnion, getDoc, addDoc, collection, getDocs, query, where, orderBy, limit, Timestamp } from 'firebase/firestore';
-import { devtools } from 'zustand/middleware';
-import { create } from 'zustand';
-import { useOrderStore } from '../order.store';
+import { doc, updateDoc, arrayUnion, getDoc, addDoc, collection, getDocs, query, where, limit, Timestamp } from 'firebase/firestore';
+import { useAppStore } from '../app.store';
 import { OrderStatus } from '@/types/types';
 
 export const calculateOrderTotal = (dishes: OrderDish[]): number => {
   return dishes.reduce((total, dish) => {
     const dishTotal = dish.basePrice + dish.addons.reduce((sum, addon) => sum + addon.price, 0);
-    return total + dishTotal;
+    const quantity = dish.quantity || 1; // Default to 1 if quantity is not set
+    return total + (dishTotal * quantity);
   }, 0);
 };
 
@@ -35,7 +34,7 @@ export const submitNewOrder = async (
   // Fetch the created order and update the store
   const orderSnap = await getDoc(docRef);
   if (orderSnap.exists()) {
-    useOrderStore.getState().setCurrentOrder({ id: docRef.id, ...orderSnap.data() } as Order);
+    useAppStore.getState().setCurrentOrder({ id: docRef.id, ...orderSnap.data() } as Order);
   }
   return docRef.id;
 };
@@ -63,7 +62,7 @@ export const updateExistingOrder = async (
   // Fetch the updated order and update the store
   const updatedSnap = await getDoc(orderRef);
   if (updatedSnap.exists()) {
-    useOrderStore.getState().setCurrentOrder({ id: orderId, ...updatedSnap.data() } as Order);
+    useAppStore.getState().setCurrentOrder({ id: orderId, ...updatedSnap.data() } as Order);
   }
 };
 
@@ -96,7 +95,7 @@ export const initCurrentOrder = async (restaurantId: string, qrId: string, order
 
 
   if (order) {
-    useOrderStore.getState().setCurrentOrder(order);
+    useAppStore.getState().setCurrentOrder(order);
     return order;
   }
 

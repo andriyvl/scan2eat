@@ -26,7 +26,7 @@ export type Dish = {
   description: string;
   image?: string;
   basePrice: number;
-  addonOptions: string[];
+  addonIds: string[];
   categoryId: string;
   tags?: string[];
   translations?: {
@@ -38,7 +38,9 @@ export type Dish = {
 };
 
 export interface OrderDish {
-  dishId: string;
+  id: string;
+  cartDishId?: string;
+  quantity?: number;
   key: string;
   basePrice: number; // price of the dish without addons
   price: number; // price of the dish with addons

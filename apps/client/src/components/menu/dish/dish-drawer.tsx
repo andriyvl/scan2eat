@@ -3,7 +3,7 @@ import { Drawer, DrawerContent } from '@/components/ui/drawer';
 import { X, Heart, Briefcase } from 'lucide-react';
 import type { Addon, Dish } from '@/types/types';
 import { AddToCardButton } from '@/components/menu/dish/add-to-card-button';
-import { useOrderStore } from '@/components/order/order.store';
+import { useAppStore } from '@/components/order/app.store';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { DishStatus } from '@/types/types';
 import { SelectButton } from '@/components/ui/select-button';
@@ -11,7 +11,7 @@ import { IconButton } from "@/components/ui/icon-button";
 import { useTranslation } from 'react-i18next';
 import { ToggleOption } from "@/components/ui/toggle-option";
 import { useEffect, useState } from 'react';
-import { getAddons } from '@/services/api.service';
+import { addDishToCart } from '../../order/preview/dish-cart.service';
 
 interface DishPreviewDrawerProps {
   open: boolean;
@@ -21,47 +21,42 @@ interface DishPreviewDrawerProps {
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
-export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
+export const DishDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenChange, dish }) => {
   const { t } = useTranslation();
   const [selectedAddons, setSelectedAddons] = useState<string[]>([]);
-  const [addons, setAddons] = useState<Addon[]>([]);
+  const { allAddons } = useAppStore();
   const [takeaway, setTakeaway] = useState(false);
   const [comment, setComment] = useState('');
   const [adding, setAdding] = useState(false);
-  const setCartDish = useOrderStore((s) => s.setCartDish);
+  const isTakeaway = useAppStore((s) => s.isTakeaway);
+  const [total, setTotal] = useState(0);
 
-  const toggleAddon = (name: string) => {
+  useEffect(() => {
+    setTakeaway(isTakeaway);
+  }, []);
+
+  // Use allAddons from the store and filter for this dish's addonIds
+  const addons = allAddons.filter(a => dish.addonIds.includes(a.id as string));
+
+  const toggleAddon = (id: string) => {
     setSelectedAddons((prev) =>
-      prev.includes(name) ? prev.filter((n) => n !== name) : [...prev, name]
+      prev.includes(id) ? prev.filter((n) => n !== id) : [...prev, id]
     );
   };
 
-  useEffect(() => {
-    const fetchAddons = async () => {
-      const addons = await getAddons(dish.addonOptions);
-      setAddons(addons);
-    };
-    if (dish.addonOptions.length > 0) {
-      fetchAddons();
-    }
-  }, [dish]);
-
-  const total = dish.basePrice + addons.filter(a => selectedAddons.includes(a.key)).reduce((sum, a) => sum + a.price, 0);
   const selectedOrderAddons = addons.filter(addon => selectedAddons.includes(addon.id as string)).map(addon => ({ id: addon.id, price: addon.price }));
+
+
+  useEffect(() => {
+    const totalPrice = dish.basePrice + addons.filter(a => selectedAddons.includes(a.id as string)).reduce((sum, a) => sum + a.price, 0);
+    setTotal(totalPrice);
+  }, [dish, selectedOrderAddons]);
 
   const handleAddToOrder = async () => {
     if (adding) return;
     setAdding(true);
-      setCartDish({
-      dishId: dish.id,
-      key: dish.key,
-      basePrice: dish.basePrice,
-      price: total,
-      addons: selectedOrderAddons,
-      comment: comment.trim() || "",
-      takeaway,
-      status: DishStatus.Awaiting,
-    });
+    addDishToCart(dish, total, selectedOrderAddons, comment.trim() || "", takeaway);
+
     setTimeout(() => {
       setAdding(false);
       onOpenChange(false);
@@ -101,7 +96,7 @@ export const DishViewDrawer: React.FC<DishPreviewDrawerProps> = ({ open, onOpenC
           </IconButton>
         </div>
         {/* Main content with rounded top corners, starts below image */}
-        <div className="bg-white rounded-t-3xl -mt-8 pt-8 px-6 pb-32 relative z-10 shadow-xl">
+        <div className="bg-white h-full rounded-t-3xl -mt-8 pt-8 px-6 pb-32 relative z-10 shadow-xl">
           <div className="flex items-center justify-between mb-2">
             <h2 className="font-bold text-2xl">{t(`dishes.${dish.key}.name`)}</h2>
             <div className="text-right">

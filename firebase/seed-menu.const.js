@@ -40,7 +40,7 @@ exports.dishes = [
     basePrice: 55000,
     imageUrl: 'https://example.com/pho.jpg',
     tags: ['popular', 'hot'],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   {
     key: 'bun_cha',
@@ -48,7 +48,7 @@ exports.dishes = [
     basePrice: 45000,
     imageUrl: 'https://example.com/buncha.jpg',
     tags: ['popular'],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   // Rice Dishes
   {
@@ -57,7 +57,7 @@ exports.dishes = [
     basePrice: 40000,
     imageUrl: 'https://example.com/comsuon.jpg',
     tags: ['popular'],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   {
     key: 'com_ga',
@@ -65,7 +65,7 @@ exports.dishes = [
     basePrice: 42000,
     imageUrl: 'https://example.com/comga.jpg',
     tags: [],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   // Appetizers
   {
@@ -74,7 +74,7 @@ exports.dishes = [
     basePrice: 35000,
     imageUrl: 'https://example.com/goicuon.jpg',
     tags: ['vegetarian'],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   {
     key: 'cha_gio',
@@ -82,7 +82,7 @@ exports.dishes = [
     basePrice: 30000,
     imageUrl: 'https://example.com/chagio.jpg',
     tags: [],
-    addonOptions: [],
+    addonIds: [],
   },
   // Drinks
   {
@@ -91,7 +91,7 @@ exports.dishes = [
     basePrice: 10000,
     imageUrl: 'https://example.com/trada.jpg',
     tags: [],
-    addonOptions: [],
+    addonIds: [],
   },
   {
     key: 'ca_phe_sua_da',
@@ -99,7 +99,7 @@ exports.dishes = [
     basePrice: 25000,
     imageUrl: 'https://example.com/caphe.jpg',
     tags: [],
-    addonOptions: [],
+    addonIds: [],
   },
   // Desserts
   {
@@ -108,7 +108,7 @@ exports.dishes = [
     basePrice: 25000,
     imageUrl: 'https://example.com/chebamau.jpg',
     tags: ['vegetarian', 'sweet'],
-    addonOptions: [],
+    addonIds: [],
   },
   {
     key: 'banh_flan',
@@ -116,7 +116,7 @@ exports.dishes = [
     basePrice: 20000,
     imageUrl: 'https://example.com/flan.jpg',
     tags: ['vegetarian', 'sweet'],
-    addonOptions: [],
+    addonIds: [],
   },
   // Burgers
   {
@@ -125,7 +125,7 @@ exports.dishes = [
     basePrice: 60000,
     imageUrl: 'https://example.com/beefburger.jpg',
     tags: ['popular'],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   {
     key: 'chicken_burger',
@@ -133,7 +133,7 @@ exports.dishes = [
     basePrice: 55000,
     imageUrl: 'https://example.com/chickenburger.jpg',
     tags: [],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   },
   // Salads
   {
@@ -142,7 +142,7 @@ exports.dishes = [
     basePrice: 35000,
     imageUrl: 'https://example.com/papaya-salad.jpg',
     tags: ['vegetarian', 'spicy'],
-    addonOptions: [],
+    addonIds: [],
   },
   {
     key: 'caesar_salad',
@@ -150,7 +150,7 @@ exports.dishes = [
     basePrice: 45000,
     imageUrl: 'https://example.com/caesar-salad.jpg',
     tags: [],
-    addonOptions: [], // Will be populated with addon IDs during seeding
+    addonIds: [], // Will be populated with addon IDs during seeding
   }
 ];
 

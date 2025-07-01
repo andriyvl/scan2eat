@@ -220,7 +220,7 @@ async function seed() {
       categoryId: categoryIds[categoryKey], // Use pre-generated category ID
       restaurantId: restaurantIds['scan2eat_demo'],
       tags: dish.tags, // Keep as array of strings
-      addonOptions: addonOptionIds
+      addonIds: addonOptionIds
     });
   }
 

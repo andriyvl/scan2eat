@@ -1,5 +1,5 @@
 import { Clock, CheckCircle2, AlertTriangle, DollarSign, Loader2 } from 'lucide-react';
-import { useOrderStore } from '../order.store';
+import { useAppStore } from '../app.store';
 import { getOrderStatusColors } from '@/utils/status-colors';
 import { DishStatus, OrderStatus } from '@/types/types';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +27,7 @@ const STATUS_CONFIG = {
 };
 
 export const OrderStatusBanner = ({ className }: { className?: string }) => {
-  const currentOrder = useOrderStore((s) => s.currentOrder);
+  const currentOrder = useAppStore((s) => s.currentOrder);
   const navigate = useNavigate();
   const { restaurantId, qrId } = useApp();
   if (!currentOrder) return null;

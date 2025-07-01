@@ -1,23 +1,25 @@
-import { useOrderStore } from '@/components/order/order.store';
+import { useAppStore } from '@/components/order/app.store';
 import { useTranslation } from 'react-i18next';
 
-const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
+const PreviewOrderButton = ({ onOpen }: { onOpen: () => void }) => {
   const { t } = useTranslation();
-  const { cartDishes } = useOrderStore();
-  const total = cartDishes.reduce((sum, d) => sum + d.price, 0);
+  const { cartDishes, getCartTotal, getCartItemCount } = useAppStore();
+  const total = getCartTotal();
+  
   if (!cartDishes.length) return null;
+  
   return (
     <div className="fixed left-0 right-0 bottom-0 z-[110] px-4 pb-4 pointer-events-none">
       <div className="max-w-xl mx-auto">
-    <button
+        <button
           onClick={onOpen}
           className="w-full flex items-center justify-between gap-4 bg-red-500 text-white py-4 rounded-full font-semibold px-6 text-lg shadow-lg pointer-events-auto transition-all disabled:opacity-60 disabled:cursor-not-allowed"
-      style={{ minWidth: 320 }}
-    >
-      <div className="flex items-center gap-3">
-            <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 font-bold text-base mr-2">{cartDishes.length}</span>
+          style={{ minWidth: 320 }}
+        >
+          <div className="flex items-center gap-3">
+            <span className="w-9 h-9 flex items-center justify-center rounded-full bg-white/20 font-bold text-base mr-2">{getCartItemCount()}</span>
             <span>{t('preview_order')}</span>
-      </div>
+          </div>
           <span className="font-bold text-xl">₫{total.toLocaleString()}</span>
         </button>
       </div>
@@ -25,4 +27,4 @@ const OrderDishesButton = ({ onOpen }: { onOpen: () => void }) => {
   );
 }; 
 
-export default OrderDishesButton; 
+export default PreviewOrderButton; 

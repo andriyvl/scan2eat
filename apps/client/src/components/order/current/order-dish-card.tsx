@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import type { Addon, OrderDish, Dish, OrderAddon } from '@/types/types';
+import type { Addon, OrderDish, Dish } from '@/types/types';
 import { StatusBadge } from './status-badge';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { useTranslation } from 'react-i18next';
 import { getDishes, getAddonsByRestaurant } from '@/services/api.service';
 import { useApp } from '@/contexts/app.context';
+import { ShoppingBag } from 'lucide-react';
 
 interface OrderDishCardProps {
   dish: OrderDish;
@@ -24,7 +25,7 @@ export const OrderDishCard: React.FC<OrderDishCardProps> = ({ dish }) => {
           getDishes(restaurantId),
           getAddonsByRestaurant(restaurantId)
         ]);
-        const foundDish = dishes.find(d => d.id === dish.dishId);
+        const foundDish = dishes.find(d => d.id === dish.id);
         setDishObject(foundDish || null);
         setAddonsObjects(allAddons);
       } catch (error) {
@@ -32,7 +33,7 @@ export const OrderDishCard: React.FC<OrderDishCardProps> = ({ dish }) => {
       }
     };
     fetchData();
-  }, [dish.dishId, restaurantId]);
+  }, [dish.id, restaurantId]);
 
   const getAddonObject = (addonId: string | undefined) => {
     return addonsObjects.find(o => o.id === addonId);
@@ -42,9 +43,10 @@ export const OrderDishCard: React.FC<OrderDishCardProps> = ({ dish }) => {
     <Card>
       <CardContent>
         <div className="flex items-center justify-between gap-2 my-1">
-          <span className="font-bold text-base">
+          <div className="font-bold text-base flex items-center gap-2">
             {dishObject ? t(`dishes.${dishObject.key}.name`) : t(`dishes.${dish.key}.name`)}
-          </span>
+            {dish.takeaway && <ShoppingBag size={16} className="text-gray-500" />}
+          </div>
           <StatusBadge status={dish.status} type="dish" size="sm" />
         </div>
         {dishObject && (

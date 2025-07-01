@@ -1,7 +1,8 @@
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { getRestaurant } from '@/services/api.service';
+import { getRestaurant, getDishes, getAddonsByRestaurant } from '@/services/api.service';
 import { initCurrentOrder } from '@/components/order/services/order.service';
+import { useAppStore } from '@/components/order/app.store';
 
 interface AppContextType {
   restaurantId: string;
@@ -24,6 +25,7 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
   const [qrId, setQrId] = useState('');
   const [restaurantKey, setRestaurantKey] = useState<string>();
   const [orderId, setOrderId] = useState<string | undefined>();
+  const { setAllDishes, setAllAddons } = useAppStore();
   const { restaurantId: urlRestaurantId, qrId: urlQrId, orderId: urlOrderId } = useParams<{ restaurantId: string; qrId: string; orderId?: string }>();
 
   useEffect(() => {
@@ -53,9 +55,16 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
       getRestaurant(restaurantId).then((restaurant) => {
         setRestaurantKey(restaurant.key);
       });
+      // Fetch all dishes and addons for the restaurant and store in app store
+      Promise.all([
+        getDishes(restaurantId),
+        getAddonsByRestaurant(restaurantId)
+      ]).then(([dishes, addons]) => {
+        setAllDishes(dishes);
+        setAllAddons(addons);
+      });
     }
 
-  
   }, [restaurantId, qrId]);
 
 

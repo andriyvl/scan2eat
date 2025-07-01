@@ -1,37 +1,33 @@
-import { useOrderStore } from '../order.store';
+import { useAppStore } from '../app.store';
+import { useApp } from '@/contexts/app.context';
 import { useState, useEffect } from 'react';
 import { useLanguage } from '@/contexts/language.context';
-import { useApp } from '@/contexts/app.context';
 import { useNavigate } from 'react-router-dom';
 import { calculateOrderTotal, submitNewOrder, updateExistingOrder } from '../services/order.service';
 import { Drawer, DrawerContent, DrawerClose } from '@/components/ui/drawer';
-import { X, ChefHat } from 'lucide-react';
+import { X, ChefHat, Plus, Minus, ShoppingBag } from 'lucide-react';
 import { SendToKitchenButton } from './send-to-kitchen-button';
 import { DialogTitle } from '@radix-ui/react-dialog';
 import { OrderStatusBanner } from '../current/order-status-banner';
 import { useTranslation } from 'react-i18next';
-import { getAddons } from '@/services/api.service';
-import type { Addon } from '@/types/types';
+import { IconButton } from '@/components/ui/icon-button';
+import { addDishToCart } from '@/components/order/preview/dish-cart.service';
+import type { OrderDish } from '@/types/types';
 
 export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOpenChange: (open: boolean) => void }) => {
-  const { cartDishes, removeCartDish, clearCartDishes } = useOrderStore();
-  const [submitting, setSubmitting] = useState(false);
+  const { cartDishes, removeCartDish, clearCartDishes, allAddons, getCurrentOrderId } = useAppStore();
   const { restaurantId, qrId } = useApp();
+  const [submitting, setSubmitting] = useState(false);
   const navigate = useNavigate();
   const { t } = useTranslation();
-  const currentOrderId = useOrderStore((s) => s.getCurrentOrderId());
-  const [addonsObjects, setAddonsObjects] = useState<Addon[]>([]);
-  
+  const currentOrderId = getCurrentOrderId();
+  // const groupedDishes = useGroupedCartDishes(cartDishes);
+  const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    const fetchAddons = async () => {
-      const addons = await getAddons(cartDishes.flatMap(d => d.addons?.map(a => a.id as string) ?? []));
-      setAddonsObjects(addons);
-    };
-    fetchAddons();
+    setTotal(calculateOrderTotal(cartDishes));
   }, [cartDishes]);
 
-  const total = calculateOrderTotal(cartDishes);
   const { language } = useLanguage();
 
   const handleSubmit = async () => {
@@ -56,7 +52,15 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
   };
 
   const getAddonNames = (addonIds: string[]) => {
-    return addonIds.map(id => `+ ${t(`addons.${addonsObjects.find(o => o.id === id)?.key}.name`)}`).join(', ');
+    return addonIds.map(id => {
+      const addon = allAddons.find(a => a.id === id);
+      return addon ? `+ ${t(`addons.${addon.key}.name`)}` : '';
+    }).filter(Boolean).join(', ');
+  };
+
+  const onAddDish = (dish: OrderDish) => {
+    addDishToCart(dish, dish.price, dish.addons, dish.comment!, false);
+    setTotal(calculateOrderTotal(cartDishes));
   };
 
   if (!cartDishes.length) return null;
@@ -80,14 +84,17 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
                 <OrderStatusBanner />
               </div>
               {cartDishes.map((dish, i) => (
-                <div key={`dish-${dish.dishId}-preview-${i}`} className="flex items-center py-4 gap-4">
+                <div key={`dish-${dish.id}-preview-${i}`} className="flex items-center py-4 gap-4">
                   <img
                     src="https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png"
                     alt={t(`dishes.${dish.key}.name`)}
                     className="w-14 h-14 object-cover rounded-lg"
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-base truncate">{t(`dishes.${dish.key}.name`)}</div>
+                    <div className="font-semibold text-base truncate flex items-center gap-2">
+                      <span>{t(`dishes.${dish.key}.name`)}</span>
+                      {dish.takeaway && <ShoppingBag size={16} className="text-gray-500" />}
+                    </div>
                     <div className="text-gray-500 text-sm truncate">
                       {`${getAddonNames(dish.addons.map(a => a.id as string))}`}
                       {dish.comment ? ` • ${dish.comment}` : ''}
@@ -96,19 +103,21 @@ export const OrderPreviewDrawer = ({ open, onOpenChange }: { open: boolean, onOp
                   <div className="text-right flex flex-col items-end gap-2">
                     <div className="font-semibold text-lg">₫{dish.price.toLocaleString()}</div>
                     <div className="flex items-center space-x-2">
-                      <button
-                        className="w-7 h-7 bg-gray-200 rounded-full flex items-center justify-center text-gray-700 hover:bg-gray-300"
-                        onClick={() => removeCartDish(dish.dishId)}
+                      <IconButton
+                        size="sm"
+                        variant="default"
+                        onClick={() => removeCartDish(dish.cartDishId!)}
                       >
-                        <span className="text-base">–</span>
-                      </button>
-                      <span className="text-base font-medium">1</span>
-                      <button
-                        className="w-7 h-7 bg-gray-300 text-white rounded-full flex items-center justify-center opacity-50 cursor-not-allowed"
-                        disabled
+                        <Minus size={16} />
+                      </IconButton>
+                      <span className="text-base font-medium">{dish.quantity}</span>
+                      <IconButton
+                        size="sm"
+                        variant="default"
+                        onClick={() => onAddDish(dish)}
                       >
-                        <span className="text-base">+</span>
-                      </button>
+                        <Plus size={16} />
+                      </IconButton>
                     </div>
                   </div>
                 </div>

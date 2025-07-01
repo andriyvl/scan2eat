@@ -1,17 +1,18 @@
 import { useState } from 'react';
 import { DishStatus, type Dish } from '@/types/types';
 import { Plus } from 'lucide-react';
-import { DishViewDrawer } from './dish-view-drawer';
-import { useOrderStore } from '@/components/order/order.store';
+import { DishDrawer } from './dish-drawer';
 import { useTranslation } from 'react-i18next';
 import { DishTag } from './dish-tag';
 import { IconButton } from '@/components/ui/icon-button';
+import { useAppStore } from '@/components/order/app.store';
+import { addDishToCart } from '../../order/preview/dish-cart.service';
 
 const STATIC_DISH_IMAGE = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/670447d22e-b32f04b3787c58602633.png';
 
 export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: (open: boolean) => void }) => {
   const [open, setOpen] = useState(false);
-  const setCartDish = useOrderStore((s) => s.setCartDish);
+  const isTakeaway = useAppStore((s) => s.isTakeaway);
   const { t } = useTranslation();
   const dishName = t(`dishes.${dish.key}.name`);
   const dishDescription = t(`dishes.${dish.key}.description`);
@@ -26,19 +27,6 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
     setOpen(value);
     if (onPreviewOpen) onPreviewOpen(value);
   };
-
-  function addToCart(dish: Dish): void {
-    setCartDish({
-      dishId: dish.id,
-      key: dish.key,
-      basePrice: dish.basePrice,
-      price: dish.basePrice,
-      addons: [],
-      comment: "",
-      takeaway: false,
-      status: DishStatus.Awaiting,
-    });
-  }
 
   return (
     <>
@@ -70,7 +58,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
               variant="default"
               onClick={(e) => {
                 e.stopPropagation();
-                addToCart(dish);
+                addDishToCart(dish, dish.basePrice, [], "", isTakeaway);
               }}
               className="add-to-order-button absolute -bottom-1 -right-1"
             >
@@ -79,7 +67,7 @@ export const DishCard = ({ dish, onPreviewOpen }: { dish: Dish; onPreviewOpen?: 
           </div>
         </div>
       </div>
-      <DishViewDrawer open={open} onOpenChange={handleOpen} dish={dish} />
+      <DishDrawer open={open} onOpenChange={handleOpen} dish={dish} />
     </>
   );
 };

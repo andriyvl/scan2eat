@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '@/components/ui/card';
 import { getAllRestaurants, getAllQrCodes, getAllOrders } from '@/services/api.service';
-import { useOrderStore } from '@/components/order/order.store';
+import { useAppStore } from '@/components/order/app.store';
+import { useApp } from '@/contexts/app.context';
 import type { Restaurant, QrCode, Order } from '@/types/types';
 import { OrderStatus } from '@/types/types';
-import { 
+
+import {
   Utensils, 
   QrCode as QrCodeIcon, 
   ShoppingCart, 
@@ -31,7 +33,7 @@ export const TablesPage = () => {
   const [restaurants, setRestaurants] = useState<RestaurantWithQrCodes[]>([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-  const { clearCurrentOrder } = useOrderStore();
+  const { clearCurrentOrder } = useAppStore();
 
   useEffect(() => {
     const fetchData = async () => {

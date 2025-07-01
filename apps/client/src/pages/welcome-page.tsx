@@ -6,14 +6,13 @@ import {
   MapPin,
   Utensils,
   ShoppingBag,
-  Armchair,
   Wifi,
   Bell,
   CreditCard,
   QrCode,
 } from 'lucide-react';
 import { useApp } from '@/contexts/app.context';
-import { useOrderStore } from '@/components/order/order.store';
+import { useAppStore } from '@/components/order/app.store';
 import { cn } from '@/utils/utils';
 
 const RESTAURANT_IMAGE_URL = 'https://storage.googleapis.com/uxpilot-auth.appspot.com/fc46fd8759-7163ce2744f74232301d.png';
@@ -24,7 +23,7 @@ export const WelcomePage = () => {
   const { restaurantKey, qrId } = useApp();
   const restaurantName = restaurantKey ? t(`restaurants.${restaurantKey}.name`) : '';
   const slogan = restaurantKey ? t(`restaurants.${restaurantKey}.slogan`) : '';
-  const { isTakeaway, setIsTakeaway } = useOrderStore();
+  const { isTakeaway, setIsTakeaway } = useAppStore();
 
   const handleStartOrdering = () => {
     navigate('./../menu');
